@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+<head>
+<title>Canvas Turtle Graphics</title>
+<style type="text/css">
+body{
+	font-size:14px;
+	font-family:helvetica,arial,sans-serif;
+}
+.mess{
+	position:fixed;
+	margin:0;
+	top:0;
+	left:0;
+	background:#fff;
+	color:#000;
+	padding:7px 20px;
+	opacity:.4;
+	letter-spacing:1px;
+}
+#turtle{
+	position:fixed;
+	top:0;
+	left:0;
+	width:41px;
+	height:41px;
+	margin:-21px;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAIFJREFUeNrs1dEGwDAMRuEm9t7rnjwzNmaM0j+TcXLVq/gcoRYRrfp4+8GABAkSJMjvkat6oSV8i8dCq4y8V9yqIq+K0pourtjPd1feprLks56spidUbOqaqpJv1SQ1PamitKai5MiCqZqL4mT4u0GCBAkSJEiQIEGCBAlyfHYBBgA6tCSzDhxhwgAAAABJRU5ErkJggg==);
+	background-image: url(turtle.png);
+	-webkit-transform-origin: 50% 50%;
+	   -moz-transform-origin: 50% 50%;
+	        transform-origin: 50% 50%;
+}
+#c{
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	width:100%;
+	height:100%;
+	background-color:#000;
+}
+#control{
+	position:fixed;
+	left:0;
+	right:0;
+	bottom:0;
+	background-color: #000;
+	color:#fff;
+	opacity:.5;
+	border-top:1px solid rgba(255,255,255,0.25);
+	padding:10px 50px 10px 38px;
+	font-size:20px;
+	font-family: Inconsolata, Consolas, 'courier new', monospace;
+}
+#control:before{
+	content:'';
+	position: absolute;
+	left:17px;
+	top:16px;
+	width:8px;
+	height:12px;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAMCAYAAABfnvydAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEJJREFUeNpi+P//PwMQ5wKxBJSNgmGSIHADmyIGqOANXIpgDJyKkI3DqgjdURiKmBgIAWKtwOtIgt4kGFB4gxogwADPNiDlqExOKQAAAABJRU5ErkJggg==);
+
+}
+#input,
+#biginput{
+	color:inherit;
+	font:inherit;
+	width:100%;
+	margin:0;
+	padding:0;
+	border:none;
+	background-color: transparent;
+	line-height:1;
+}
+#input:focus,
+#biginput:focus{
+	outline:none;
+}
+#biginput{
+	height:1em;
+	-webkit-transition:height 300ms ease-in-out;
+}
+#expand,
+#collapse{
+	position: absolute;
+	bottom:0;
+	right:0;
+	width:40px;
+	background:red;
+	border:none;
+	margin:0;
+	padding:0;
+	cursor:pointer;
+	color:transparent;
+	font-size:0;
+}
+#expand{
+	top:0;
+}
+#collapse{
+	height:40px;
+}
+</style>
+<script src="jquery-1.8.0.min.js"></script>
+<script src="jtg.js"></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<span id="turtle"></span>
+<form id="control">
+	<input id="input" type="text" autofocus autocomplete="off">
+	<button type="button" id="expand" href="#">expand</button>
+</form>
+<script>
+
+var canvas = document.getElementById('c');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var turtle = new Turtle(canvas);
+var t = turtle;
+
+(function(){
+	var command = '';
+	var commands = [];
+	var count = 0;
+
+	$('body').on('keydown', 'input#input', function(ev){
+		var $inp = $(this);
+		if (ev.keyCode === 38) {
+			// up
+			ev.preventDefault();
+			count = Math.max(0, count - 1);
+			var c = commands[count];
+			if (c) $inp.val(c);
+		} else if (ev.keyCode === 40) {
+			// down
+			ev.preventDefault();
+			count = Math.min(commands.length, count + 1);
+			var c = commands[count];
+			if (c) $inp.val(c);
+			else $inp.val(command);
+		} else {
+			setTimeout(function(){
+				if (ev.keyCode === 13) {
+					// enter
+					ev.preventDefault();
+					var val = $inp.val();
+					if (!val || !/\S/.test(val)) return;
+					try {
+						with (window) { window.eval(val); }
+					} catch(err) {
+						mess(err.message);
+						return;
+					}
+					$inp.val('');
+					commands.push(val);
+					command = '';
+					count = commands.length;
+				} else {
+					var newCommand = $inp.val();
+					if (newCommand !== commands[count]){
+						command = $inp.val();
+					}
+				}
+			},1);
+		}
+	});
+
+	$('body').on('keydown', 'textarea#biginput', function(ev){
+		var $inp = $(this);
+		setTimeout(function(){
+			if (ev.keyCode === 13 && ev.shiftKey) {
+				// enter
+				ev.preventDefault();
+				var val = $inp.val();
+				if (!val || !/\S/.test(val)) return;
+				val = val.replace(/\r?\n$/,'');
+				$inp.val(val);
+				try {
+					with (window) { window.eval(val); }
+				} catch(err) {
+					mess(err.message);
+					return;
+				}
+				$inp.val('');
+				commands.push(val);
+				command = '';
+				count = commands.length;
+			} else {
+				var newCommand = $inp.val();
+				if (newCommand !== commands[count]){
+					command = $inp.val();
+				}
+			}
+		},1);
+	});
+})();
+
+$('body').on('click','#expand', function(ev){
+	ev.preventDefault();
+	$('#control').html('<textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#">collapse</button>');
+	$('#biginput').css('height','10em');
+});
+
+$('body').on('click','#collapse', function(ev){
+	ev.preventDefault();
+	$('#biginput').css('height','1em');
+	setTimeout(function(){
+		$('#control').html('<input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#">expand</button>');
+	},350);
+});
+
+t.on('move', function(){
+	$('#turtle').css({
+		left:t.syncInfo.tlX()+'px',
+		top:t.syncInfo.tlY()+'px'
+	});
+});
+
+t.on('rotate', function(){
+	$('#turtle').css({
+		'-webkit-transform':'rotate('+Math.round(-t.syncInfo.heading())+'deg)',
+		'-moz-transform':'rotate('+Math.round(-t.syncInfo.heading())+'deg)',
+		'transform':'rotate('+Math.round(-t.syncInfo.heading())+'deg)'
+	});
+});
+
+t.on('visibility', function(){
+	$('#turtle').css('display', t.syncInfo.visibility() ? 'block' : 'none');
+});
+
+t.init();
+
+$('form#control').submit(function(ev){
+	ev.preventDefault();
+});
+
+function mess(message) {
+	$('body').append('<p class="mess">'+message+'</p>');
+	var $m = $('.mess');
+	$m.hide().fadeIn(200, function(){
+		setTimeout(function(){
+			$m.fadeOut(600, function(){
+				$m.remove();
+			});
+		},1500);
+	});
+}
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
