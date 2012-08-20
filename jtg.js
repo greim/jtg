@@ -13,7 +13,7 @@ window.Turtle = function(canvas){
 
 	var showTurtle = true;
 	var defaultFg = '#fff';
-	var defaultBg = '#000';
+	var defaultBg = '#222';
 	var defaultWidth = '1';
 	var origin = {
 		x: Math.floor(canvasWidth / 2) + .5,

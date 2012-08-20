@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<title>Canvas Turtle Graphics</title>
+<title>JavaScript/Canvas Turtle Graphics</title>
 <style type="text/css">
 body{
 	font-size:14px;
@@ -49,7 +49,7 @@ body{
 	background-color: #000;
 	color:#fff;
 	opacity:.5;
-	border-top:1px solid rgba(255,255,255,0.25);
+	border-top:1px solid rgba(255,255,255,0.4);
 	padding:10px 50px 10px 38px;
 	font-size:20px;
 	font-family: Inconsolata, Consolas, 'courier new', monospace;
@@ -81,27 +81,47 @@ body{
 }
 #biginput{
 	height:1em;
+	resize:none;
 	-webkit-transition:height 300ms ease-in-out;
+	   -moz-transition:height 300ms ease-in-out;
+	        transition:height 300ms ease-in-out;
 }
 #expand,
 #collapse{
 	position: absolute;
-	bottom:0;
+	top:0;
 	right:0;
 	width:40px;
-	background:red;
 	border:none;
 	margin:0;
 	padding:0;
 	cursor:pointer;
 	color:transparent;
 	font-size:0;
+	background-color:transparent;
+	background-repeat:no-repeat;
+	background-position: 50% 50%;
+	opacity:.5;
 }
 #expand{
-	top:0;
+	bottom:0;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAARCAYAAADQWvz5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAIVJREFUeNrs0sEJwCAMBVBTOoEguP8encGrI/TUFVKF0AYbk/TSUwNBkO8jYAARg1GRzkMLLQ5ko45qsk806di64F2F7sS8FzExC6kMqRpmIZlBWcM4kgQkMCgIWJpNNCIjNGLXWxD2KLfe+cfSCUpGhB4bIkCvF9JdP/QhtDoy4IFOAQYAIVd4gaJr3SIAAAAASUVORK5CYII=);
 }
 #collapse{
 	height:40px;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAARCAYAAADQWvz5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAIRJREFUeNrs0s0JgDAMBWC7QkDoPs7tDL06gqeuEFNIIU2TVtCbBh794fnhoQERlzcm3IBqIfzQF6BIOSeQ7lCLIJEyByWqOxTnyB1510ArJRmYhCSS+JsOKgEDq6MR8P7Iw1DtO8SDNCbHREaQhblIyewdAWXn/UbJTx4k8JpHpUuAAQCOQ5bABCYU5gAAAABJRU5ErkJggg==);
+}
+#tip{
+	position:absolute;
+	bottom:100%;
+	margin:0;
+	margin-bottom:1px;
+	right:0;
+	font:normal 14px/1.4 helvetica,arial,sans-serif;
+	background:#fff;
+	color:#000;
+	padding:10px 15px;
+	opacity:.4;
 }
 </style>
 <script src="jquery-1.8.0.min.js"></script>
@@ -110,10 +130,7 @@ body{
 <body>
 <canvas id="c"></canvas>
 <span id="turtle"></span>
-<form id="control">
-	<input id="input" type="text" autofocus autocomplete="off">
-	<button type="button" id="expand" href="#">expand</button>
-</form>
+<form id="control"></form>
 <script>
 
 var canvas = document.getElementById('c');
@@ -171,47 +188,72 @@ var t = turtle;
 
 	$('body').on('keydown', 'textarea#biginput', function(ev){
 		var $inp = $(this);
-		setTimeout(function(){
-			if (ev.keyCode === 13 && ev.shiftKey) {
-				// enter
-				ev.preventDefault();
-				var val = $inp.val();
-				if (!val || !/\S/.test(val)) return;
-				val = val.replace(/\r?\n$/,'');
-				$inp.val(val);
-				try {
-					with (window) { window.eval(val); }
-				} catch(err) {
-					mess(err.message);
-					return;
+		if (ev.keyCode === 38 && ev.shiftKey) {
+			// up
+			ev.preventDefault();
+			count = Math.max(0, count - 1);
+			var c = commands[count];
+			if (c) $inp.val(c);
+		} else if (ev.keyCode === 40 && ev.shiftKey) {
+			// down
+			ev.preventDefault();
+			count = Math.min(commands.length, count + 1);
+			var c = commands[count];
+			if (c) $inp.val(c);
+			else $inp.val(command);
+		} else {
+			setTimeout(function(){
+				if (ev.keyCode === 13 && ev.shiftKey) {
+					// enter
+					ev.preventDefault();
+					var val = $inp.val();
+					if (!val || !/\S/.test(val)) return;
+					val = val.replace(/\r?\n$/,'');
+					$inp.val(val);
+					try {
+						with (window) { window.eval(val); }
+					} catch(err) {
+						mess(err.message);
+						return;
+					}
+					$inp.val('');
+					commands.push(val);
+					command = '';
+					count = commands.length;
+				} else {
+					var newCommand = $inp.val();
+					if (newCommand !== commands[count]){
+						command = $inp.val();
+					}
 				}
-				$inp.val('');
-				commands.push(val);
-				command = '';
-				count = commands.length;
-			} else {
-				var newCommand = $inp.val();
-				if (newCommand !== commands[count]){
-					command = $inp.val();
-				}
-			}
-		},1);
+			},1);
+		}
 	});
 })();
 
-$('body').on('click','#expand', function(ev){
-	ev.preventDefault();
-	$('#control').html('<textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#">collapse</button>');
-	$('#biginput').css('height','10em');
-});
 
-$('body').on('click','#collapse', function(ev){
-	ev.preventDefault();
-	$('#biginput').css('height','1em');
-	setTimeout(function(){
-		$('#control').html('<input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#">expand</button>');
-	},350);
-});
+(function(){
+	var collapsedHtml = '<input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
+	var expandedHtml = '<textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
+	$('#control').html(collapsedHtml);
+	$('body').on('click','#expand', function(ev){
+		ev.preventDefault();
+		$('#control').html(expandedHtml);
+		$('#biginput').css('height','10em');
+	});
+	$('body').on('click','#collapse', function(ev){
+		ev.preventDefault();
+		$('#biginput').css('height','1em');
+		setTimeout(function(){
+			$('#control').html(collapsedHtml);
+		},350);
+	});
+	function showTip(m){ $('#control').append('<p id="tip">'+m+'</p>'); }
+	function hideTip(){ $('#tip').remove(); }
+	$('body').on('mouseenter','#expand, #collapse', function(ev){ showTip($(this).attr('data-title')); });
+	$('body').on('mouseleave','#expand, #collapse', function(ev){ hideTip(); });
+})();
+
 
 t.on('move', function(){
 	$('#turtle').css({
