@@ -72,7 +72,8 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 	position: absolute;
 	bottom:100%;
 	left:0;
-	margin:6px 7px;
+	margin:0;
+	padding:6px 7px;
 	font-size:12px;
 	color:#fff;
 	background:#222;
@@ -96,6 +97,7 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 #biginput{
 	height:1em;
 	resize:none;
+	background:transparent url(friends.png) no-repeat 50% 50%;
 	-webkit-transition:height 300ms ease-in-out;
 	   -moz-transition:height 300ms ease-in-out;
 	        transition:height 300ms ease-in-out;
@@ -441,6 +443,7 @@ var t = turtle;
 	});
 
 	$('body').on('keydown', 'textarea#biginput', function(ev){
+		$(this).css('background-image','none');
 		var $inp = $(this);
 		if (ev.keyCode === 38 && ev.shiftKey) {
 			// up
