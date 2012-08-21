@@ -254,7 +254,7 @@ window.Turtle = function(canvas){
 
 	// ######################################################
 	// misc getters
-	T.info = {
+	T.async = {
 		rand: function(lower, upper){
 			return function(){
 				if (upper === undefined) upper = lower, lower = 0;
@@ -311,9 +311,9 @@ window.Turtle = function(canvas){
 
 	// ######################################################
 	// misc getters
-	T.syncInfo = {};
-	for (var m in T.info) {
-		T.syncInfo[m] = T.info[m]();
+	T.info = {};
+	for (var m in T.async) {
+		T.info[m] = T.async[m]();
 	}
 
 	// init this turtle

@@ -7,6 +7,10 @@ body{
 	font-size:14px;
 	font-family:helvetica,arial,sans-serif;
 }
+h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
+	margin-top:10px;
+	margin-bottom:10px;
+}
 .mess{
 	position:fixed;
 	margin:0;
@@ -123,11 +127,245 @@ body{
 	padding:10px 15px;
 	opacity:.4;
 }
+#help{
+	position:fixed;
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+	overflow:auto;
+	z-index:10;
+	color:#cfc;
+	font-size:13px;
+	line-height:1.4;
+	font-family: Inconsolata, Consolas, 'courier new', monospace;
+	background:#222;
+}
+#help.hidden{
+	display:none;
+}
+#helpesctip{
+	position:absolute;
+	margin:0;
+	top:20px;
+	right:25px;
+}
+#help h2{
+	color:#ffa;
+}
+#help h2,
+#help h3{
+	font-size:inherit;
+}
+#help h3{
+	font-weight:normal;
+}
+#help h3 + pre{
+	margin-top:-6px;
+}
+#help table{
+	border-collapse:collapse;
+	border:1px solid #444;
+	margin:20px 0;
+	background:#262626;
+}
+#help table td{
+	border:1px solid #444;
+	padding:3px 7px;
+}
+#help code{
+	color:#fff;
+	font-weight:bold;
+}
+#help pre{
+	color:#ccc;
+}
+#helpA,
+#helpB{
+	padding:10px 25px 300px;
+	box-sizing:border-box;
+	position:absolute;
+	top:0;
+}
+#helpA{
+	width:60%;
+	left:0;
+	padding-right:100px;
+}
+#helpB{
+	width:40%;
+	right:0;
+	border-left:1px dotted rgba(255,255,255,0.2);
+}
 </style>
 <script src="jquery-1.8.0.min.js"></script>
 <script src="jtg.js"></script>
 </head>
 <body>
+<div id="help" class="hidden">
+	<p id="helpesctip">
+		Press ESC to show/hide this help
+	</p>
+	<div id="helpA">
+		<h2>Welcome to JavaScript Turtle Graphics!</h2>
+		<p>
+			Type your commands below and see them faithfully executed by our eponymous turtle.
+		</p>
+		<p>
+			Here, you'll be programming in JavaScript instead of some variant of Logo, but you still get to watch a triangle race around the screen!
+			It's super easy.
+			The interactive prompt below exposes the valiable <code>t</code>, which is an instance of class <code>Turtle</code>, which was instantiated on the &lt;canvas&gt; element that underlays this page.
+			Here's a quick rundown of its methods.
+			Also, these methods all return <code>t</code>, so they can be chained, e.g. <code>t.fd(100).rt(90).fd(100)</code>.
+		</p>
+		<table>
+			<tr><td><code>t.fd(n)</code></td><td>Forward. Move forward <code>n</code> pixels.</td></tr>
+			<tr><td><code>t.bk(n)</code></td><td>Back. Move backward <code>n</code> pixels.</td></tr>
+			<tr><td><code>t.rt(deg)</code></td><td>Right turn. Rotate <code>deg</code> clockwise. (right turn)</td></tr>
+			<tr><td><code>t.lt(deg)</code></td><td>Left turn. Rotate <code>deg</code> counter-clockwise.</td></tr>
+			<tr><td><code>t.pu()</code></td><td>Pen up. Turtle no longer traces line along its path.</td></tr>
+			<tr><td><code>t.pd()</code></td><td>Pen down. Turtle resumes tracing line along its path.</td></tr>
+			<tr><td><code>t.clean()</code></td><td>Revert screen to current background color.</td></tr>
+			<tr><td><code>t.home()</code></td><td>Revert turtle to center screen (0,0).</td></tr>
+			<tr><td><code>t.clear()</code></td><td>Equivalent to <code>clean()</code> and <code>home()</code> together.</td></tr>
+			<tr><td><code>t.reset()</code></td><td>Same as <code>clear()</code>, but also restores defaults.</td></tr>
+			<tr><td><code>t.fg(color)</code></td><td>Foreground. Sets foreground (pen) color. Accepts any CSS color.</td></tr>
+			<tr><td><code>t.bg(color)</code></td><td>Background. Sets background (screen) color. Accepts any CSS color.</td></tr>
+			<tr><td><code>t.width(n)</code></td><td>Sets the width in px of the pen stroke.</td></tr>
+			<tr><td><code>t.hide()</code></td><td>Hides turtle. May marginally improve performance.</td></tr>
+			<tr><td><code>t.show()</code></td><td>Shows turtle. May marginally decrease performance.</td></tr>
+			<tr><td><code>t.absXY(x, y)</code></td><td>Moves turtle to absolute position, where origin (0,0) is center of screen.</td></tr>
+			<tr><td><code>t.absX(x)</code></td><td>Moves turtle to absolute X position, leaving Y coord unchanged.</td></tr>
+			<tr><td><code>t.absY(y)</code></td><td>Moves turtle to absolute Y position, leaving X coord unchanged.</td></tr>
+			<tr><td><code>t.absHeading(deg)</code></td><td>Sets absolute turtle direction in degrees, with 0 being "north".</td></tr>
+		</table>
+		<p>
+			Of course, you may also wish to query turtle state.
+			For that, we have the <code>info</code> methods.
+		</p>
+		<table>
+			<tr><td><code>t.info.x()</code></td><td>Turtle's x position where origin (0,0) is center of screen.</td></tr>
+			<tr><td><code>t.info.y()</code></td><td>Turtle's y position where origin (0,0) is center of screen.</td></tr>
+			<tr><td><code>t.info.heading()</code></td><td>Turtle's orientation in degrees, where 0 is "north".</td></tr>
+			<tr><td><code>t.info.pen()</code></td><td><code>true</code> if pen is down, <code>false</code> otherwise.</td></tr>
+			<tr><td><code>t.info.fg()</code></td><td>Foreground color.</td></tr>
+			<tr><td><code>t.info.bg()</code></td><td>Background color.</td></tr>
+			<tr><td><code>t.info.rand([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
+		</table>
+		<h2>Depth notes I</h2>
+		<p>
+			JavaScript provides a number of ways to do loops, and you're certainly free to use them in your program.
+			Alternatively, the turtle gives you a couple ways to do things over and over again.
+			This allows you to do loops the "turtle" way, which isn't necessarily a better way.
+		</p>
+		<table>
+			<tr><td><code>t.repeat(n, func)</code></td><td>Executes <code>func</code> <code>n</code> times, passing <code>i</code> as arg.</td></tr>
+			<tr><td><code>t.forever(func)</code></td><td>Executes <code>func</code> until it returns false, passing <code>i</code> as arg.</td></tr>
+		</table>
+		<h2>Depth notes II</h2>
+		<p>
+			Turtle execution is asyncronous.
+			Internally, your program merely builds a queue of commands to be executed over time.
+			This allows line segments to be drawn during spaces in between, which is what the turtle graphics experience is all about.
+			However, it means that your entire program is executed before the turtle has moved at all!
+			This should be unsurprising to anyone who's ever set an event handler.
+		</p>
+		<p>
+			Now, I wish that was all there was to say, but it's not.
+			Some programmers may wish to feed turtle state back into itself, for God knows whatever reason.
+			In order to do this, you'll be interested in turtle state at the time of execution, not at the time you issued your command.
+			To that end, any turtle method that accepts a raw value will also accept a function, which is evaluated in real time during the drawing.
+			For example, consider:
+		</p>
+		<pre>t.home().fd(100).rt(t.info.y())</pre>
+		<p>
+			Contrary to what you might expect, this won't cause the turtle to turn right by 100, but rather it will turn right by zero, AKA not at all.
+			Why?
+			Because fd(100) merely sets an action to be performed later, and meanwhile its <code>y</code> position remains zero!
+			Now consider:
+		</p>
+		<pre>t.home().fd(100).rt(function(){ return t.info.y() })</pre>
+		<p>
+			This will do what you expect because that function is evaluated during the drawing.
+			But it's a wee bit verbose, don't you think?
+			So all of that to say, for every <code>t.info.foo()</code> method above, there's a corresponding <code>t.async.foo()</code> method.
+			Which returns a function and allows you to do this:
+		</p>
+		<pre>t.home().fd(100).rt(t.async.y())</pre>
+		<h2>Depth notes III</h2>
+		<p>
+			Numeric values given and received by the turtle (lengths, degrees) needn't be integers, and may often have fractional components.
+		</p>
+		<p>
+			Color values given and received by the turtle needn't be fully opaque colors, and may in fact be colors of the form <code>"rgba(...)"</code> and <code>"hsla(...)"</code>.
+		</p>
+		<h2>Depth notes IV</h2>
+		<p>
+			Lines drawn on &lt;canvas&gt; elements are usually anti-aliased, unlike typical Logo-based turtle graphics.
+			Expect to see some interesting moir&#233; patterns when such lines are grouped closely together.
+			No, it doesn't mean your program is clever. Well, maybe it is, but mainly it hints at the complexity inherent in nature.
+		</p>
+	</div>
+	<div id="helpB">
+		<h2>Sample Programs</h2>
+		<h3>Spiral</h3>
+		<pre>
+t.clear()
+.repeat(300, function(i){
+  t.fd(i/10).rt(10)
+})
+		</pre>
+
+		<h3>Lots of circles (long)</h3>
+		<pre>
+t.reset()
+.fg('rgba(255,255,255,0.2)')
+.repeat(7, function(){
+  t.repeat(36, function(){
+    t.repeat(36, function(){
+      t.fd(30).rt(10)
+    }).rt(10);
+  }).rt(1);
+});
+		</pre>
+
+		<h3>Koch snowflake</h3>
+		<pre>
+var koch = (function(){
+  function frag(len, depth){
+    if (depth > 1) {
+      frag(len/3, depth-1); t.rt(60);
+      frag(len/3, depth-1); t.lt(120);
+      frag(len/3, depth-1); t.rt(60);
+      frag(len/3, depth-1);
+    } else {
+      t.fd(len);
+    }
+  }
+  return function(len, depth){
+    frag(len,depth); t.lt(120);
+    frag(len,depth); t.lt(120);
+    frag(len,depth); t.lt(120);
+  }
+})();
+// koch(300, 5);
+		</pre>
+		<h3>Tree</h3>
+		<pre>
+function tree(arms, length, count){
+  if (count < 1) return;
+  for (var i=0; i&lt;arms; i++) {
+    t.lt(360/arms);
+    t.pd().fd(length);
+    tree(arms, (length * 2) / arms, count - 1);
+    t.pu();
+    t.bk(length);
+  }
+}
+// tree(6,128,4)
+		</pre>
+	</div>
+</div>
 <canvas id="c"></canvas>
 <span id="turtle"></span>
 <form id="control"></form>
@@ -254,24 +492,29 @@ var t = turtle;
 	$('body').on('mouseleave','#expand, #collapse', function(ev){ hideTip(); });
 })();
 
+$('body').on('keydown', function(ev){
+	if (ev.keyCode === 27) {
+		$('#help').toggleClass('hidden');
+	}
+});
 
 t.on('move', function(){
 	$('#turtle').css({
-		left:t.syncInfo.tlX()+'px',
-		top:t.syncInfo.tlY()+'px'
+		left:t.info.tlX()+'px',
+		top:t.info.tlY()+'px'
 	});
 });
 
 t.on('rotate', function(){
 	$('#turtle').css({
-		'-webkit-transform':'rotate('+Math.round(-t.syncInfo.heading())+'deg)',
-		'-moz-transform':'rotate('+Math.round(-t.syncInfo.heading())+'deg)',
-		'transform':'rotate('+Math.round(-t.syncInfo.heading())+'deg)'
+		'-webkit-transform':'rotate('+Math.round(-t.info.heading())+'deg)',
+		'-moz-transform':'rotate('+Math.round(-t.info.heading())+'deg)',
+		'transform':'rotate('+Math.round(-t.info.heading())+'deg)'
 	});
 });
 
 t.on('visibility', function(){
-	$('#turtle').css('display', t.syncInfo.visibility() ? 'block' : 'none');
+	$('#turtle').css('display', t.info.visibility() ? 'block' : 'none');
 });
 
 t.init();
