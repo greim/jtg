@@ -1,5 +1,30 @@
 <!doctype html>
 <html>
+
+<!--
+Copyright (c) 2012 Greg Reimer
+http://obadger.com/
+"gregreimer" "at" "gmail" "dot" "com"
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
 <head>
 <title>JavaScript/Canvas Turtle Graphics</title>
 <style type="text/css">
@@ -10,6 +35,11 @@ body{
 h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 	margin-top:10px;
 	margin-bottom:10px;
+}
+a[href]{
+	color:inherit;
+	text-decoration: none;
+	border-bottom:1px dotted;
 }
 .mess{
 	position:fixed;
@@ -175,19 +205,29 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 #help h3 + pre{
 	margin-top:-6px;
 }
+#help p + h2,
+#help pre + h2{
+	margin-top:20px;
+}
 #help table{
 	border-collapse:collapse;
 	border:1px solid #444;
 	margin:20px 0;
 	background:#262626;
 }
+#help table th,
 #help table td{
+	font-weight: normal;
+	text-align:left;
 	border:1px solid #444;
 	padding:3px 7px;
 }
+#help table th{
+	color:#777;
+	background:#2a2a2a;
+}
 #help code{
 	color:#fff;
-	font-weight:bold;
 }
 #help pre{
 	color:#ccc;
@@ -225,12 +265,12 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 		</p>
 		<p>
 			Here, you'll be programming in JavaScript instead of some variant of Logo, but you still get to watch a triangle race around the screen!
-			It's super easy.
-			The interactive prompt below exposes the valiable <code>t</code>, which is an instance of class <code>Turtle</code>, which was instantiated on the <code>&lt;canvas&gt;</code> element that underlays this page.
+			The interactive prompt below exposes the valiable <code>t</code>, which is an instance of class <code>Turtle</code>.
 			Here's a quick rundown of its methods.
-			Also, these methods all return <code>t</code>, so they can be chained, e.g. <code>t.fd(100).rt(90).fd(100)</code>.
 		</p>
 		<table>
+			<thead><tr><th>method</th><th>description</th></tr></thead>
+			<tbody>
 			<tr><td><code>t.fd(n)</code></td><td>Forward. Move ahead by <code>n</code> pixels.</td></tr>
 			<tr><td><code>t.bk(n)</code></td><td>Back. Move in reverse by <code>n</code> pixels.</td></tr>
 			<tr><td><code>t.rt(deg)</code></td><td>Right turn. Rotate <code>deg</code> clockwise.</td></tr>
@@ -250,19 +290,26 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 			<tr><td><code>t.absX(x)</code></td><td>Moves turtle to absolute X position, leaving Y coord unchanged.</td></tr>
 			<tr><td><code>t.absY(y)</code></td><td>Moves turtle to absolute Y position, leaving X coord unchanged.</td></tr>
 			<tr><td><code>t.absHeading(deg)</code></td><td>Sets absolute turtle direction in degrees, with 0 being "north".</td></tr>
+			</tbody>
 		</table>
 		<p>
-			Of course, you may also wish to query turtle state.
+			The above methods all return <code>this</code>, so they can be chained, e.g. <code>t.fd(100).rt(90).fd(100)</code>.
+			You may also wish to query turtle state.
 			For that, we have the <code>info</code> methods.
 		</p>
 		<table>
+			<thead><tr><th>method</th><th>description</th></tr></thead>
+			<tbody>
 			<tr><td><code>t.info.x()</code></td><td>Turtle's x position where origin (0,0) is center of screen.</td></tr>
 			<tr><td><code>t.info.y()</code></td><td>Turtle's y position where origin (0,0) is center of screen.</td></tr>
 			<tr><td><code>t.info.heading()</code></td><td>Turtle's orientation in degrees, where 0 is "north".</td></tr>
-			<tr><td><code>t.info.pen()</code></td><td><code>true</code> if pen is down, <code>false</code> otherwise.</td></tr>
+			<tr><td><code>t.info.pu()</code></td><td><code>true</code> if pen is up, <code>false</code> otherwise.</td></tr>
+			<tr><td><code>t.info.pd()</code></td><td><code>true</code> if pen is down, <code>false</code> otherwise.</td></tr>
 			<tr><td><code>t.info.fg()</code></td><td>Foreground color.</td></tr>
 			<tr><td><code>t.info.bg()</code></td><td>Background color.</td></tr>
+			<tr><td><code>t.info.width()</code></td><td>Width in px of pen stroke.</td></tr>
 			<tr><td><code>t.info.rand([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
+			</tbody>
 		</table>
 		<h2>Depth notes I</h2>
 		<p>
@@ -271,39 +318,20 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 			This allows you to do loops the "turtle" way, which isn't necessarily a better way.
 		</p>
 		<table>
+			<thead><tr><th>method</th><th>description</th></tr></thead>
+			<tbody>
 			<tr><td><code>t.repeat(n, func)</code></td><td>Executes <code>func</code> <code>n</code> times, passing <code>i</code> as arg.</td></tr>
 			<tr><td><code>t.forever(func)</code></td><td>Executes <code>func</code> until it returns false, passing <code>i</code> as arg.</td></tr>
+			</tbody>
 		</table>
 		<h2>Depth notes II</h2>
 		<p>
-			Turtle execution is asyncronous.
-			Internally, your program merely builds a queue of commands to be executed over time.
-			This allows line segments to be rendered out during spaces in between, culminating in the turtle "racing around the screen" effect, which is what turtle graphics are all about.
-			However, it means that your entire program is executed before the turtle has moved at all!
-			This should be unperturbing to anyone who's ever set an event handler.
+			Some turtle graphics programs finish quickly and are fun to watch, but others run a long time.
+			This is because the drawing is rendered sequentially, piece by piece.
+			To speed things up a bit, when the queue of things remaining to do gets quite long, more and more of these "pieces" are batched together between renders.
+			When the drawing approaches the end, this batching decreases and then stops.
+			This results in a visual effect where the turtle initially tears through the drawing at a high rate of speed, and then slows to a more leisurely pace at the end.
 		</p>
-		<p>
-			Now, I wish that was all there was to say, but it's not.
-			Some programmers may wish to feed turtle state back into itself, for God knows whatever reason.
-			In order to do this, you'll be interested in turtle state at the time of execution, not at the time you issued your command.
-			To that end, any turtle method that accepts a raw value will also accept a function, which is evaluated in real time during the drawing.
-			For example, consider:
-		</p>
-		<pre>t.home().fd(100).rt(t.info.y())</pre>
-		<p>
-			Contrary to what you might expect, this won't cause the turtle to turn right by 100, but rather it will turn right by zero, AKA not at all.
-			Why?
-			Because fd(100) merely sets an action to be performed later, and meanwhile its <code>y</code> position remains zero!
-			Now consider:
-		</p>
-		<pre>t.home().fd(100).rt(function(){ return t.info.y() })</pre>
-		<p>
-			This will do what you expect because that function is evaluated during the drawing.
-			But it's a wee bit verbose, don't you think?
-			So all of that to say, for every <code>t.info.foo()</code> method above, there's a corresponding <code>t.async.foo()</code> method.
-			Which returns a function and allows you to do this:
-		</p>
-		<pre>t.home().fd(100).rt(t.async.y())</pre>
 		<h2>Depth notes III</h2>
 		<p>
 			Numeric values given and received by the turtle (lengths, degrees) needn't be integers, and may often have fractional components.
@@ -319,19 +347,49 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 			Expect to see some interesting moir&#233; patterns when such lines are grouped closely together.
 			No, it doesn't mean your program is clever. Well, maybe it is, but mainly it hints at the complexity inherent in nature.
 		</p>
+		<h2>Depth notes V</h2>
+		<p>
+			Turtle execution is asyncronous.
+			Internally, your program merely builds a queue of commands to be executed in a manner that's spread out over time.
+			During the spaces in between executions, the canvas is able to render, culminating in the "turtle racing around the screen" effect, which is an important aspect of turtle graphics.
+			However, it means that your entire program is executed before the turtle has moved at all!
+			While perhaps initially counter-intuitive, it should be familiar to anyone who's done event- or callback-based programming.
+		</p>
+		<p>
+			Now, I wish that was all there was to say, but it's not.
+			Some programmers may wish to feed turtle state back into itself, for god knows whatever reason.
+			In order to do this, you'll be interested in turtle state at the time of execution, not at the time you issued your command.
+			To that end, any turtle method that accepts a raw value will also accept a function, which is evaluated in real time during the drawing.
+			For example, consider:
+		</p>
+		<pre>t.fd(100).rt(t.info.y())</pre>
+		<p>
+			Contrary to what you might expect, this won't cause the turtle to turn right by 100, but rather it will turn right by zero, AKA not at all (assuming it started at 0,0).
+			Why?
+			Because fd(100) merely sets an action to be performed later, and meanwhile its <code>y</code> position remains zero!
+			Now consider:
+		</p>
+		<pre>t.fd(100).rt(function(){ return t.info.y() })</pre>
+		<p>
+			This will do what you expect because that function is evaluated during the drawing.
+			But it's a wee bit verbose, don't you think?
+			So all of that to say, for every <code>t.info.foo()</code> method above, there's a corresponding <code>t.async.foo()</code> method.
+			Which returns a function and allows you to do this:
+		</p>
+		<pre>t.fd(100).rt(t.async.y())</pre>
 	</div>
 	<div id="helpB">
 		<h2>Sample Programs</h2>
-		<h3>Spiral</h3>
-		<pre>
-t.clear()
-.repeat(300, function(i){
-  t.fd(i/10).rt(10)
+		<h3>Spiral <a href="#" class="runner" title="run this sample program" data-code="spiral-code">run</a></h3>
+		<pre id="spiral-code">
+t.reset()
+.repeat(1000, function(i){
+  t.fd(i/10).rt(15)
 })
 		</pre>
 
-		<h3>Lots of circles (long)</h3>
-		<pre>
+		<h3>Lots of circles <a href="#" class="runner" title="run this sample program" data-code="circles-code">run</a></h3>
+		<pre id="circles-code">
 t.reset()
 .fg('rgba(255,255,255,0.2)')
 .repeat(7, function(){
@@ -342,9 +400,26 @@ t.reset()
   }).rt(1);
 });
 		</pre>
-
-		<h3>Koch snowflake</h3>
-		<pre>
+		<h3>Sunburst <a href="#" class="runner" title="run this sample program" data-code="sunburst-code">run</a></h3>
+		<pre id="sunburst-code">
+t.reset()
+.fg('rgba(255,255,255,0.15)')
+.repeat(720, function(i){
+  if(i%72 < 36){
+    t.fd(2000).bk(2000);
+  }
+  t.rt(.5);
+})
+		</pre>
+		<h3>Interesting moir&#233; <a href="#" class="runner" title="run this sample program" data-code="moire-code">run</a></h3>
+		<pre id="moire-code">
+t.reset()
+.repeat(1000, function(i){
+  t.fd(i).rt(90.1)
+})
+		</pre>
+		<h3>Koch snowflake <a href="#" class="runner" title="run this sample program" data-code="koch-code">run</a></h3>
+		<pre id="koch-code">
 var koch = (function(){
   function frag(len, depth){
     if (depth > 1) {
@@ -362,10 +437,11 @@ var koch = (function(){
     frag(len,depth); t.lt(120);
   }
 })();
-// koch(300, 5);
+t.reset();
+koch(300, 6);
 		</pre>
-		<h3>Tree</h3>
-		<pre>
+		<h3>Path flowers <a href="#" class="runner" title="run this sample program" data-code="flowers-code">run</a></h3>
+		<pre id="flowers-code">
 function tree(arms, length, count){
   if (count < 1) return;
   for (var i=0; i&lt;arms; i++) {
@@ -376,13 +452,26 @@ function tree(arms, length, count){
     t.bk(length);
   }
 }
-// tree(6,128,4)
+t.reset();
+tree(7,200,4);
 		</pre>
-		<h3>Interesting moir&#233;</h3>
-		<pre>
-t.repeat(1000, function(i){
-  t.fd(i).rt(90.1)
-})
+		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run</a></h3>
+		<pre id="triangles-code">
+function triangle(len, level){
+  if (level < 1) {
+    t.repeat(3, function(){
+      t.fd(len).rt(120);
+    });
+  } else {
+    t.repeat(3, function(){
+      t.pd();
+      triangle(len/2, level-1);
+      t.pu().fd(len).rt(120);
+    })
+  }
+}
+t.reset();
+triangle(300, 5);
 		</pre>
 	</div>
 </div>
@@ -390,6 +479,18 @@ t.repeat(1000, function(i){
 <span id="turtle"></span>
 <form id="control"></form>
 <script>
+
+$('a[href].runner').on('click', function(ev){
+	ev.preventDefault();
+	var id = $(this).attr('data-code');
+	var code = $('#'+id).text();
+	$('#help').addClass('hidden');
+	try {
+		with (window) { window.eval(code); }
+	} catch(err) {
+		mess(err.message);
+	}
+})
 
 var canvas = document.getElementById('c');
 canvas.width = window.innerWidth;
