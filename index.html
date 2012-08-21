@@ -68,6 +68,16 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAMCAYAAABfnvydAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEJJREFUeNpi+P//PwMQ5wKxBJSNgmGSIHADmyIGqOANXIpgDJyKkI3DqgjdURiKmBgIAWKtwOtIgt4kGFB4gxogwADPNiDlqExOKQAAAABJRU5ErkJggg==);
 
 }
+#esctip{
+	position: absolute;
+	bottom:100%;
+	left:0;
+	margin:6px 7px;
+	font-size:12px;
+	color:#fff;
+	background:#222;
+	opacity:.25;
+}
 #input,
 #biginput{
 	color:inherit;
@@ -214,14 +224,14 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 		<p>
 			Here, you'll be programming in JavaScript instead of some variant of Logo, but you still get to watch a triangle race around the screen!
 			It's super easy.
-			The interactive prompt below exposes the valiable <code>t</code>, which is an instance of class <code>Turtle</code>, which was instantiated on the &lt;canvas&gt; element that underlays this page.
+			The interactive prompt below exposes the valiable <code>t</code>, which is an instance of class <code>Turtle</code>, which was instantiated on the <code>&lt;canvas&gt;</code> element that underlays this page.
 			Here's a quick rundown of its methods.
 			Also, these methods all return <code>t</code>, so they can be chained, e.g. <code>t.fd(100).rt(90).fd(100)</code>.
 		</p>
 		<table>
-			<tr><td><code>t.fd(n)</code></td><td>Forward. Move forward <code>n</code> pixels.</td></tr>
-			<tr><td><code>t.bk(n)</code></td><td>Back. Move backward <code>n</code> pixels.</td></tr>
-			<tr><td><code>t.rt(deg)</code></td><td>Right turn. Rotate <code>deg</code> clockwise. (right turn)</td></tr>
+			<tr><td><code>t.fd(n)</code></td><td>Forward. Move ahead by <code>n</code> pixels.</td></tr>
+			<tr><td><code>t.bk(n)</code></td><td>Back. Move in reverse by <code>n</code> pixels.</td></tr>
+			<tr><td><code>t.rt(deg)</code></td><td>Right turn. Rotate <code>deg</code> clockwise.</td></tr>
 			<tr><td><code>t.lt(deg)</code></td><td>Left turn. Rotate <code>deg</code> counter-clockwise.</td></tr>
 			<tr><td><code>t.pu()</code></td><td>Pen up. Turtle no longer traces line along its path.</td></tr>
 			<tr><td><code>t.pd()</code></td><td>Pen down. Turtle resumes tracing line along its path.</td></tr>
@@ -254,8 +264,8 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 		</table>
 		<h2>Depth notes I</h2>
 		<p>
-			JavaScript provides a number of ways to do loops, and you're certainly free to use them in your program.
-			Alternatively, the turtle gives you a couple ways to do things over and over again.
+			JavaScript provides a number of ways to do loops, and you're certainly free to use them in your JavaScript Turtle program.
+			Alternatively, the turtle gives you a couple of its own ways to do things over and over again.
 			This allows you to do loops the "turtle" way, which isn't necessarily a better way.
 		</p>
 		<table>
@@ -266,9 +276,9 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 		<p>
 			Turtle execution is asyncronous.
 			Internally, your program merely builds a queue of commands to be executed over time.
-			This allows line segments to be drawn during spaces in between, which is what the turtle graphics experience is all about.
+			This allows line segments to be drawn during spaces in between, culminating in the turtle "racing around the screen," which is what the turtle graphics experience is all about.
 			However, it means that your entire program is executed before the turtle has moved at all!
-			This should be unsurprising to anyone who's ever set an event handler.
+			This should be unperturbing to anyone who's ever set an event handler.
 		</p>
 		<p>
 			Now, I wish that was all there was to say, but it's not.
@@ -363,6 +373,12 @@ function tree(arms, length, count){
   }
 }
 // tree(6,128,4)
+		</pre>
+		<h3>Interesting moir&#233;</h3>
+		<pre>
+t.repeat(1000, function(i){
+  t.fd(i).rt(90.1)
+})
 		</pre>
 	</div>
 </div>
@@ -471,8 +487,8 @@ var t = turtle;
 
 
 (function(){
-	var collapsedHtml = '<input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
-	var expandedHtml = '<textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
+	var collapsedHtml = '<p id="esctip">hit ESC for help</p><input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
+	var expandedHtml = '<p id="esctip">hit ESC for help</p><textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
 	$('#control').html(collapsedHtml);
 	$('body').on('click','#expand', function(ev){
 		ev.preventDefault();

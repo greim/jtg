@@ -234,8 +234,10 @@ window.Turtle = function(canvas){
 		.show()
 		.clear();
 	};
+
+	// ######################################################
+	// loopers
 	T.repeat = function(amount, fun){
-		amount = get(amount);
 		for (var i=0; i<amount; i++) {
 			var result = fun.call(T, i);
 			if (!result && result !== undefined) break;
