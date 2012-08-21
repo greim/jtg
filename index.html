@@ -278,7 +278,7 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 		<p>
 			Turtle execution is asyncronous.
 			Internally, your program merely builds a queue of commands to be executed over time.
-			This allows line segments to be drawn during spaces in between, culminating in the turtle "racing around the screen," which is what the turtle graphics experience is all about.
+			This allows line segments to be rendered out during spaces in between, culminating in the turtle "racing around the screen" effect, which is what turtle graphics are all about.
 			However, it means that your entire program is executed before the turtle has moved at all!
 			This should be unperturbing to anyone who's ever set an event handler.
 		</p>
@@ -307,13 +307,15 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 		<h2>Depth notes III</h2>
 		<p>
 			Numeric values given and received by the turtle (lengths, degrees) needn't be integers, and may often have fractional components.
+			Of course this is given, since this is JavaScript.
+			For some reason it occurred to me to mention it.
 		</p>
 		<p>
 			Color values given and received by the turtle needn't be fully opaque colors, and may in fact be colors of the form <code>"rgba(...)"</code> and <code>"hsla(...)"</code>.
 		</p>
 		<h2>Depth notes IV</h2>
 		<p>
-			Lines drawn on &lt;canvas&gt; elements are usually anti-aliased, unlike typical Logo-based turtle graphics.
+			Lines drawn on <code>&lt;canvas&gt;</code> elements are usually anti-aliased, unlike typical Logo-based turtle graphics.
 			Expect to see some interesting moir&#233; patterns when such lines are grouped closely together.
 			No, it doesn't mean your program is clever. Well, maybe it is, but mainly it hints at the complexity inherent in nature.
 		</p>
