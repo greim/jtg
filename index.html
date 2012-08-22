@@ -102,7 +102,7 @@ a[href]{
 	position: absolute;
 	bottom:100%;
 	left:0;
-	margin:0;
+	margin:0 0 1px;
 	padding:6px 7px;
 	font-size:12px;
 	color:#fff;
@@ -127,10 +127,20 @@ a[href]{
 #biginput{
 	height:1em;
 	resize:none;
-	background:transparent url(friends.png) no-repeat 50% 50%;
+	position: relative;
 	-webkit-transition:height 300ms ease-in-out;
 	   -moz-transition:height 300ms ease-in-out;
 	        transition:height 300ms ease-in-out;
+}
+#althint{
+	position: absolute;
+	left:0;
+	right:0;
+	text-align: center;
+	top:50%;
+	margin-top:-20px;
+	font:bold 30px/1 helvetica,arial,sans-serif;
+	opacity:.2;
 }
 #expand,
 #collapse{
@@ -264,7 +274,7 @@ a[href]{
 			Type your commands below and see them faithfully executed by our eponymous turtle.
 		</p>
 		<p>
-			Here, you'll be programming in JavaScript instead of some variant of Logo, but you still get to watch a triangle race around the screen!
+			Here, you'll be programming in JavaScript instead of the Logo language, but you still get to watch a triangle race around the screen!
 			The interactive prompt below exposes the valiable <code>t</code>, which is an instance of class <code>Turtle</code>.
 			Here's a quick rundown of its methods.
 		</p>
@@ -392,7 +402,7 @@ t.reset()
 		<pre id="circles-code">
 t.reset()
 .fg('rgba(255,255,255,0.2)')
-.repeat(7, function(){
+.repeat(8, function(){
   t.repeat(36, function(){
     t.repeat(36, function(){
       t.fd(30).rt(10)
@@ -437,23 +447,23 @@ var koch = (function(){
     frag(len,depth); t.lt(120);
   }
 })();
-t.reset();
-koch(300, 6);
+t.reset().bk(300).clean().rt(30);
+koch(550, 6);
 		</pre>
-		<h3>Path flowers <a href="#" class="runner" title="run this sample program" data-code="flowers-code">run</a></h3>
-		<pre id="flowers-code">
-function tree(arms, length, count){
+		<h3>Flower <a href="#" class="runner" title="run this sample program" data-code="flower-code">run</a></h3>
+		<pre id="flower-code">
+function flower(arms, length, count){
   if (count < 1) return;
   for (var i=0; i&lt;arms; i++) {
     t.lt(360/arms);
     t.pd().fd(length);
-    tree(arms, (length * 2) / arms, count - 1);
+    flower(arms, (length * 2) / arms, count - 1);
     t.pu();
     t.bk(length);
   }
 }
 t.reset();
-tree(7,200,4);
+flower(7,200,4);
 		</pre>
 		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run</a></h3>
 		<pre id="triangles-code">
@@ -470,8 +480,8 @@ function triangle(len, level){
     })
   }
 }
-t.reset();
-triangle(300, 5);
+t.reset().absXY(-300, -200).clean().rt(30);
+triangle(600, 7);
 		</pre>
 	</div>
 </div>
@@ -546,15 +556,15 @@ var t = turtle;
 	});
 
 	$('body').on('keydown', 'textarea#biginput', function(ev){
-		$(this).css('background-image','none');
+		$('#althint').fadeOut(500);
 		var $inp = $(this);
-		if (ev.keyCode === 38 && ev.shiftKey) {
+		if (ev.keyCode === 38 && ev.altKey) {
 			// up
 			ev.preventDefault();
 			count = Math.max(0, count - 1);
 			var c = commands[count];
 			if (c) $inp.val(c);
-		} else if (ev.keyCode === 40 && ev.shiftKey) {
+		} else if (ev.keyCode === 40 && ev.altKey) {
 			// down
 			ev.preventDefault();
 			count = Math.min(commands.length, count + 1);
@@ -563,7 +573,7 @@ var t = turtle;
 			else $inp.val(command);
 		} else {
 			setTimeout(function(){
-				if (ev.keyCode === 13 && ev.shiftKey) {
+				if (ev.keyCode === 13 && ev.altKey) {
 					// enter
 					ev.preventDefault();
 					var val = $inp.val();
@@ -594,7 +604,7 @@ var t = turtle;
 
 (function(){
 	var collapsedHtml = '<p id="esctip">hit ESC for help</p><input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
-	var expandedHtml = '<p id="esctip">hit ESC for help</p><textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
+	var expandedHtml = '<span id="althint">EXECUTE: ALT+ENTER<br>HISTORY: ALT+UP/DOWN</span><p id="esctip">hit ESC for help</p><textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
 	$('#control').html(collapsedHtml);
 	$('body').on('click','#expand', function(ev){
 		ev.preventDefault();
