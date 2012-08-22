@@ -530,28 +530,26 @@ var t = turtle;
 			var c = commands[count];
 			if (c) $inp.val(c);
 			else $inp.val(command);
+		} else if (ev.keyCode === 13) {
+			// enter
+			ev.preventDefault();
+			var val = $inp.val();
+			if (!val || !/\S/.test(val)) return;
+			try {
+				with (window) { window.eval(val); }
+			} catch(err) {
+				mess(err.message);
+				return;
+			}
+			$inp.val('');
+			commands.push(val);
+			command = '';
+			count = commands.length;
 		} else {
 			setTimeout(function(){
-				if (ev.keyCode === 13) {
-					// enter
-					ev.preventDefault();
-					var val = $inp.val();
-					if (!val || !/\S/.test(val)) return;
-					try {
-						with (window) { window.eval(val); }
-					} catch(err) {
-						mess(err.message);
-						return;
-					}
-					$inp.val('');
-					commands.push(val);
-					command = '';
-					count = commands.length;
-				} else {
-					var newCommand = $inp.val();
-					if (newCommand !== commands[count]){
-						command = $inp.val();
-					}
+				var newCommand = $inp.val();
+				if (newCommand !== commands[count]){
+					command = newCommand;
 				}
 			},1);
 		}
@@ -573,30 +571,28 @@ var t = turtle;
 			var c = commands[count];
 			if (c) $inp.val(c);
 			else $inp.val(command);
+		} else if (ev.keyCode === 13 && ev.altKey) {
+			// enter
+			ev.preventDefault();
+			var val = $inp.val();
+			if (!val || !/\S/.test(val)) return;
+			val = val.replace(/\r?\n$/,'');
+			$inp.val(val);
+			try {
+				with (window) { window.eval(val); }
+			} catch(err) {
+				mess(err.message);
+				return;
+			}
+			$inp.val('');
+			commands.push(val);
+			command = '';
+			count = commands.length;
 		} else {
 			setTimeout(function(){
-				if (ev.keyCode === 13 && ev.altKey) {
-					// enter
-					ev.preventDefault();
-					var val = $inp.val();
-					if (!val || !/\S/.test(val)) return;
-					val = val.replace(/\r?\n$/,'');
-					$inp.val(val);
-					try {
-						with (window) { window.eval(val); }
-					} catch(err) {
-						mess(err.message);
-						return;
-					}
-					$inp.val('');
-					commands.push(val);
-					command = '';
-					count = commands.length;
-				} else {
-					var newCommand = $inp.val();
-					if (newCommand !== commands[count]){
-						command = $inp.val();
-					}
+				var newCommand = $inp.val();
+				if (newCommand !== commands[count]){
+					command = newCommand;
 				}
 			},1);
 		}
