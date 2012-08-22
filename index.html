@@ -476,7 +476,7 @@ $('a[href].runner').on('click', function(ev){
 	ev.preventDefault();
 	var id = $(this).attr('data-code');
 	var code = $('#'+id).text();
-	$('#help').addClass('hidden');
+	$('#help').addClass('hidden').hide();
 	try {
 		with (window) { window.eval(code); }
 	} catch(err) {
@@ -604,7 +604,14 @@ var t = turtle;
 
 $('body').on('keydown', function(ev){
 	if (ev.keyCode === 27) {
-		$('#help').toggleClass('hidden');
+		var $help = $('#help');
+		if ($help.hasClass('hidden')) {
+			$help.hide().removeClass('hidden').fadeIn(200);
+		} else {
+			$help.fadeOut(100, function(){
+				$help.addClass('hidden');
+			});
+		}
 	}
 });
 
