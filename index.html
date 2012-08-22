@@ -231,6 +231,7 @@ a[href]{
 	text-align:left;
 	border:1px solid #444;
 	padding:3px 7px;
+	vertical-align:top;
 }
 #help table th{
 	color:#777;
@@ -296,8 +297,6 @@ a[href]{
 			<tr><td><code>t.fg(color)</code></td><td>Foreground. Sets foreground (pen) color. Accepts any CSS color.</td></tr>
 			<tr><td><code>t.bg(color)</code></td><td>Background. Sets background (screen) color. Accepts any CSS color.</td></tr>
 			<tr><td><code>t.width(n)</code></td><td>Sets the width in px of the pen stroke.</td></tr>
-			<tr><td><code>t.hide()</code></td><td>Hides turtle. May marginally improve performance.</td></tr>
-			<tr><td><code>t.show()</code></td><td>Shows turtle. May marginally decrease performance.</td></tr>
 			<tr><td><code>t.absXY(x, y)</code></td><td>Moves turtle to absolute position, where origin (0,0) is center of screen.</td></tr>
 			<tr><td><code>t.absX(x)</code></td><td>Moves turtle to absolute X position, leaving Y coord unchanged.</td></tr>
 			<tr><td><code>t.absY(y)</code></td><td>Moves turtle to absolute Y position, leaving X coord unchanged.</td></tr>
@@ -332,8 +331,8 @@ a[href]{
 		<table>
 			<thead><tr><th>method</th><th>description</th></tr></thead>
 			<tbody>
-			<tr><td><code>t.repeat(n, func)</code></td><td>Executes <code>func</code> <code>n</code> times, passing <code>i</code> as arg.</td></tr>
-			<tr><td><code>t.forever(func)</code></td><td>Executes <code>func</code> until it returns false, passing <code>i</code> as arg.</td></tr>
+			<tr><td><code>t.repeat(n, func)</code></td><td>Runs <code>func</code> until it returns false or until it runs <code>n</code> times, passing <code>i</code> as arg.</td></tr>
+			<tr><td><code>t.forever(func)</code></td><td>Runs <code>func</code> until it returns false, passing <code>i</code> as arg.</td></tr>
 			</tbody>
 		</table>
 		<h2>Depth notes II</h2>
@@ -356,39 +355,8 @@ a[href]{
 		<h2>Depth notes IV</h2>
 		<p>
 			Lines drawn on <code>&lt;canvas&gt;</code> elements are usually anti-aliased, unlike typical Logo-based turtle graphics.
-			Expect to see some interesting moir&#233; patterns when such lines are grouped closely together.
-			No, it doesn't mean your program is clever. Well, maybe it is, but mainly it hints at the complexity inherent in nature.
+			Watch for interesting moir&#233; patterns when such lines are grouped closely together.
 		</p>
-		<h2>Depth notes V</h2>
-		<p>
-			Turtle execution is asyncronous.
-			Internally, your program merely builds a queue of commands to be executed in a manner that's spread out over time.
-			During the spaces in between executions, the canvas is able to render, culminating in the "turtle racing around the screen" effect, which is an important aspect of turtle graphics.
-			However, it means that your entire program is executed before the turtle has moved at all!
-			While perhaps initially counter-intuitive, it should be familiar to anyone who's done event- or callback-based programming.
-		</p>
-		<p>
-			Now, I wish that was all there was to say, but it's not.
-			Some programmers may wish to feed turtle state back into itself, for god knows whatever reason.
-			In order to do this, you'll be interested in turtle state at the time of execution, not at the time you issued your command.
-			To that end, any turtle method that accepts a raw value will also accept a function, which is evaluated in real time during the drawing.
-			For example, consider:
-		</p>
-		<pre>t.fd(100).rt(t.info.y())</pre>
-		<p>
-			Contrary to what you might expect, this won't cause the turtle to turn right by 100, but rather it will turn right by zero, AKA not at all (assuming it started at 0,0).
-			Why?
-			Because fd(100) merely sets an action to be performed later, and meanwhile its <code>y</code> position remains zero!
-			Now consider:
-		</p>
-		<pre>t.fd(100).rt(function(){ return t.info.y() })</pre>
-		<p>
-			This will do what you expect because that function is evaluated during the drawing.
-			But it's a wee bit verbose, don't you think?
-			So all of that to say, for every <code>t.info.foo()</code> method above, there's a corresponding <code>t.async.foo()</code> method.
-			Which returns a function and allows you to do this:
-		</p>
-		<pre>t.fd(100).rt(t.async.y())</pre>
 	</div>
 	<div id="helpB">
 		<h2>Sample Programs</h2>
@@ -486,16 +454,14 @@ t.reset().absXY(-300, -200)
 .rt(30).bg('#555').fg('#ffe').clean();
 triangle(600, 7);
 		</pre>
-		<h3>The kind of thing that happens when you<br>feed turtle state back into itself <a href="#" class="runner" title="run this sample program" data-code="state-code">run</a></h3>
+		<h3>Example of feeding turtle state back into itself <a href="#" class="runner" title="run this sample program" data-code="state-code">run</a></h3>
 		<pre id="state-code">
 t.reset()
 .fg('rgba(255,255,255,0.1)')
 .repeat(360, function(i){
   t.pu().home().pd()
   .repeat(80, function(){
-    t.fd(20).rt(function(){
-      return t.info.y()+i;
-    })
+    t.fd(20).rt(t.info.y()+i)
   })
 })
 		</pre>
@@ -642,23 +608,21 @@ $('body').on('keydown', function(ev){
 	}
 });
 
-t.on('move', function(){
-	$('#turtle').css({
-		left:t.info.tlX()+'px',
-		top:t.info.tlY()+'px'
+var $turtle = $('#turtle');
+t.on('move', function(args){
+	console.log(args.x)
+	$turtle.css({
+		left:args.x+'px',
+		top:args.y+'px'
 	});
 });
 
-t.on('rotate', function(){
-	$('#turtle').css({
-		'-webkit-transform':'rotate('+Math.round(-t.info.heading())+'deg)',
-		'-moz-transform':'rotate('+Math.round(-t.info.heading())+'deg)',
-		'transform':'rotate('+Math.round(-t.info.heading())+'deg)'
+t.on('rotate', function(deg){
+	$turtle.css({
+		'-webkit-transform':'rotate('+Math.round(-deg)+'deg)',
+		'-moz-transform':'rotate('+Math.round(-deg)+'deg)',
+		'transform':'rotate('+Math.round(-deg)+'deg)'
 	});
-});
-
-t.on('visibility', function(){
-	$('#turtle').css('display', t.info.visibility() ? 'block' : 'none');
 });
 
 t.init();

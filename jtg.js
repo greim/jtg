@@ -33,7 +33,7 @@ window.Turtle = function(canvas){
 
 	var T = this;
 
-	var showTurtle = true;
+	// bits of unchanging info
 	var defaultFg = '#fff';
 	var defaultBg = '#222';
 	var defaultWidth = '1';
@@ -42,23 +42,42 @@ window.Turtle = function(canvas){
 		y: Math.floor(canvasHeight / 2) + .5,
 	};
 
+	// bits of info that change
+	var foreground = defaultFg;
+	var background = defaultBg;
+	var width = width;
 	var penDown = true;
 	var pos = {};
 	var heading = 0;
 
-	// convenience function
-	function go(x,y){
-		ctx.beginPath();
-		ctx.moveTo(pos.x, pos.y);
-		pos.x = x;
-		pos.y = y;
-		ctx.lineTo(pos.x, pos.y);
-		if (penDown) {
-			ctx.stroke();
-		}
-		trigger('move');
-	}
+	// general purpose line drawing method, no rotation
+	var go = (function(){
+		var oldX = undefined;
+		var oldY = undefined;
+		var oldFg = undefined;
+		var oldWidth = undefined;
+		return function(args){
+			ctx.beginPath();
+			if (args.fg !== oldFg) {
+				ctx.strokeStyle = args.fg;
+				oldFg = args.fg;
+			}
+			if (args.width !== oldWidth) {
+				ctx.lineWidth = args.width;
+				oldWidth = args.width;
+			}
+			ctx.moveTo(oldX, oldY);
+			ctx.lineTo(args.x, args.y);
+			if (args.pd) {
+				ctx.stroke();
+			}
+			oldX = args.x;
+			oldY = args.y;
+			trigger('move', args);
+		};
+	})();
 
+	// queueing function
 	var q = (function(){	
 		var funs = [];
 		(function run(){
@@ -83,11 +102,6 @@ window.Turtle = function(canvas){
 		}
 	})();
 
-	function get(val){
-		if (typeof val === 'function') { val = val(); }
-		return val;
-	}
-
 	// ######################################################
 	// event handlers
 	var events = {};
@@ -102,7 +116,7 @@ window.Turtle = function(canvas){
 		var handlers = events[ev];
 		if (handlers) {
 			for (var i=0; i<handlers.length; i++) {
-				handlers[i].call(T, args);
+				handlers[i].apply(T, args);
 			}
 		}
 	}
@@ -110,53 +124,53 @@ window.Turtle = function(canvas){
 	// ######################################################
 	// move forward, back, left, right
 	T.fd = function(amount) {
-		q(function(){
-			amount = get(amount);
-			var deltaX = Math.sin(heading) * -amount;
-			var deltaY = Math.cos(heading) * -amount;
-			go(pos.x + deltaX, pos.y + deltaY);
-		});
+		pos.x += Math.sin(heading) * -amount;
+		pos.y += Math.cos(heading) * -amount;
+		var args = {
+			x:pos.x,
+			y:pos.y,
+			pd:penDown,
+			width:width,
+			fg:foreground
+		};
+		q(function(){ go(args); });
 		return T;
 	};
 	T.bk = function(amount) {
-		q(function(){
-			amount = -get(amount);
-			var deltaX = Math.sin(heading) * -amount;
-			var deltaY = Math.cos(heading) * -amount;
-			go(pos.x + deltaX, pos.y + deltaY);
-		});
-		return T;
+		return T.fd(-amount);
 	};
 
 	// ######################################################
 	// move to absolute positions
+	function xy(x,y){
+		pos.x = x;
+		pos.y = y;
+		var args = {
+			x:pos.x,
+			y:pos.y,
+			pd:penDown,
+			width:width,
+			fg:foreground
+		};
+		q(function(){ go(args); });
+	}
 	T.absXY = function(x, y){
-		q(function(){
-			x = get(x);
-			y = get(y);
-			go(origin.x+x, origin.y-y);
-		});
+		xy(origin.x+x, origin.y-y);
 		return T;
 	};
 	T.absX = function(x){
-		q(function(){
-			x = get(x);
-			go(origin.x+x, pos.y);
-		});
+		xy(origin.x+x, pos.y);
 		return T;
 	};
 	T.absY = function(y){
-		q(function(){
-			y = get(y);
-			go(pos.x, origin.y-y);
-		});
+		xy(pos.x, origin.y-y);
 		return T;
 	};
 	T.absHeading = function(deg){
+		heading = -deg * (Math.PI/180);
+		var absDeg = T.info.heading();
 		q(function(){
-			deg = get(deg);
-			heading = deg * (Math.PI/180);
-			trigger('rotate');
+			trigger('rotate', absDeg);
 		});
 		return T;
 	};
@@ -164,90 +178,68 @@ window.Turtle = function(canvas){
 	// ######################################################
 	// left turn, right turn
 	T.rt = function(deg) {
+		var delta = deg * (Math.PI/180);
+		heading -= delta;
+		var absDeg = T.info.heading();
 		q(function(){
-			deg = get(deg);
-			var delta = deg * (Math.PI/180);
-			heading -= delta;
-			trigger('rotate');
+			trigger('rotate', absDeg);
 		});
 		return T;
 	};
 	T.lt = function(deg) {
-		q(function(){
-			deg = -get(deg);
-			var delta = deg * (Math.PI/180);
-			heading -= delta;
-			trigger('rotate');
-		});
-		return T;
+		return T.rt(-deg);
 	};
 
 	// ######################################################
 	// pen up, pen down
 	T.pu = function() {
-		q(function(){
-			penDown = false;
-			trigger('pen');
-		});
+		penDown = false;
+		q(function(){ trigger('pu'); });
 		return T;
 	};
 	T.pd = function() {
-		q(function(){
-			penDown = true;
-			trigger('pen');
-		});
+		penDown = true;
+		q(function(){ trigger('pd'); });
 		return T;
 	};
 
 	// ######################################################
 	// misc
 	T.fg = function(color) {
-		q(function(){
-			color = get(color);
-			ctx.strokeStyle = color;
-			trigger('color');
-		});
-		return T;
-	};
-	T.hide = function(){
-		showTurtle = false;
-		trigger('visibility');
-		return T;
-	};
-	T.show = function(){
-		showTurtle = true;
-		trigger('visibility');
-		return T;
-	};
-	T.width = function(width){
-		q(function(){
-			width = get(width);
-			ctx.lineWidth = width;
-		});
+		foreground = color;
 		return T;
 	};
 	T.bg = function(color) {
-		q(function(){
-			color = get(color);
-			ctx.fillStyle = color;
-		});
+		background = color;
+		return T;
+	};
+	T.width = function(aWidth){
+		width = aWidth;
 		return T;
 	};
 	T.clean = function(){
+		var bg = background;
 		q(function(){
+			ctx.fillStyle = bg;
 			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 			ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 		});
 		return T;
 	};
 	T.home = function(){
+		heading = 0;
+		pos.x = origin.x;
+		pos.y = origin.y;
+		var args = {
+			x:pos.x,
+			y:pos.y,
+			pd:false,
+			width:width,
+			fg:foreground
+		};
 		q(function(){
-			var pen = penDown;
-			penDown = false;
-			go(origin.x, origin.y);
-			penDown = pen;
-			heading = 0;
-			trigger('rotate');
+			go(args);
+			trigger('rotate', 0);
 		});
 		return T;
 	};
@@ -262,7 +254,6 @@ window.Turtle = function(canvas){
 		.fg(defaultFg)
 		.bg(defaultBg)
 		.width(defaultWidth)
-		.show()
 		.clear();
 	};
 
@@ -287,77 +278,43 @@ window.Turtle = function(canvas){
 
 	// ######################################################
 	// misc getters
-	T.async = {
+	T.info = {
 		rand: function(lower, upper){
-			return function(){
-				if (upper === undefined) upper = lower, lower = 0;
-				var diff = upper - lower;
-				return Math.random() * diff + lower;
-			};
+			if (upper === undefined) upper = lower, lower = 0;
+			var diff = upper - lower;
+			return Math.random() * diff + lower;
 		},
 		x: function(){
-			return function(){
-				return pos.x - origin.x;
-			};
+			return pos.x - origin.x;
 		},
 		y: function(){
-			return function(){
-				return pos.y - origin.y;
-			};
+			return origin.y - pos.y;
 		},
 		tlX: function(){
-			return function(){
-				return pos.x; // from top left
-			};
+			return pos.x; // from top left
 		},
 		tlY: function(){
-			return function(){
-				return pos.y; // from top left
-			};
+			return pos.y; // from top left
 		},
 		heading: function(){
-			return function(){
-				return heading * (180/Math.PI);
-			};
+			return heading * (180/Math.PI);
 		},
 		pu: function(){
-			return function(){
-				return !penDown;
-			};
+			return !penDown;
 		},
 		pd: function(){
-			return function(){
-				return penDown;
-			};
+			return penDown;
 		},
 		width: function(){
-			return function(){
-				return ctx.lineWidth;
-			};
+			return width;
 		},
 		fg: function(){
-			return function(){
-				return ctx.strokeStyle;
-			};
+			return foreground;
 		},
 		bg: function(){
-			return function(){
-				return ctx.fillStyle;
-			};
-		},
-		visibility: function(){
-			return function(){
-				return showTurtle;
-			};
+			return background;
 		}
 	};
-
-	// ######################################################
-	// misc getters
-	T.info = {};
-	for (var m in T.async) {
-		T.info[m] = T.async[m]();
-	}
 
 	// init this turtle
 	T.init();
