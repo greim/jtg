@@ -39,7 +39,7 @@ window.Turtle = function(canvas){
 	var defaultWidth = '1';
 	var origin = {
 		x: Math.floor(canvasWidth / 2) + .5,
-		y: Math.floor(canvasHeight / 2) + .5,
+		y: Math.floor(canvasHeight / 2) + .5
 	};
 
 	// bits of info that change
@@ -80,20 +80,25 @@ window.Turtle = function(canvas){
 	// queueing function
 	var q = (function(){	
 		var funs = [];
+		var at = 0;
 		(function run(){
-			var len = funs.length;
+			var len = funs.length - at;
 			if (len > 0) {
 				if (len > 500) {
 					// for really long runs, batch actions together
 					for (var i=0; i<len/250; i++) {
-						funs.shift()();
+						funs[at++]();
 					}
 				} else {
 					// otherwise one action at a time
-					funs.shift()();
+					funs[at++]();
 				}
 				setTimeout(run,0);
 			} else {
+				if (funs.length > 0){
+					funs = [];
+					at = 0;
+				}
 				setTimeout(run, 200);
 			}
 		})();
@@ -205,19 +210,16 @@ window.Turtle = function(canvas){
 
 	// ######################################################
 	// misc
-	T.fg = function(color) {
+	T.color = function(color) {
 		foreground = color;
-		return T;
-	};
-	T.bg = function(color) {
-		background = color;
 		return T;
 	};
 	T.width = function(aWidth){
 		width = aWidth;
 		return T;
 	};
-	T.clean = function(){
+	T.clean = function(color){
+		if (color) background = color;
 		var bg = background;
 		q(function(){
 			ctx.fillStyle = bg;
@@ -250,9 +252,9 @@ window.Turtle = function(canvas){
 		.pd();
 	};
 	T.reset = T.init = function(){
+		background = defaultBg;
 		return T
-		.fg(defaultFg)
-		.bg(defaultBg)
+		.color(defaultFg)
 		.width(defaultWidth)
 		.clear();
 	};
@@ -308,10 +310,10 @@ window.Turtle = function(canvas){
 		width: function(){
 			return width;
 		},
-		fg: function(){
+		color: function(){
 			return foreground;
 		},
-		bg: function(){
+		background: function(){
 			return background;
 		}
 	};

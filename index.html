@@ -26,7 +26,7 @@ SOFTWARE.
 -->
 
 <head>
-<title>JavaScript/Canvas Turtle Graphics</title>
+<title>JavaScript Turtle Graphics</title>
 <style type="text/css">
 body{
 	font-size:14px;
@@ -39,7 +39,6 @@ h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 a[href]{
 	color:inherit;
 	text-decoration: none;
-	border-bottom:1px dotted;
 }
 .mess{
 	position:fixed;
@@ -181,11 +180,11 @@ a[href]{
 }
 #help{
 	position:fixed;
+	overflow:auto;
 	left:0;
 	top:0;
 	right:0;
 	bottom:0;
-	overflow:auto;
 	z-index:10;
 	color:#cfc;
 	font-size:13px;
@@ -195,6 +194,11 @@ a[href]{
 }
 #help.hidden{
 	display:none;
+}
+#help a[href]{
+	color:inherit;
+	text-decoration: none;
+	border-bottom:1px dotted rgba(200,255,255,0.3);
 }
 #helpesctip{
 	position:absolute;
@@ -262,6 +266,14 @@ a[href]{
 	right:0;
 	border-left:1px dotted rgba(255,255,255,0.2);
 }
+#helpB h3{
+	border-top:1px dotted rgba(255,255,255,0.15);
+	padding-top:10px;
+	margin-left:-25px;
+	padding-left:25px;
+	margin-right:-25px;
+	padding-right:25px;
+}
 </style>
 <script src="jquery-1.8.0.min.js"></script>
 <script src="jtg.js"></script>
@@ -277,6 +289,11 @@ a[href]{
 			Type your commands below and see them faithfully executed by our eponymous turtle.
 		</p>
 		<p>
+			What's turtle graphics?
+			<a href="http://en.wikipedia.org/wiki/Turtle_graphics">From Wikipedia</a>: "Turtle graphics is a term in computer graphics for a method of programming vector graphics using a relative cursor (the "turtle") upon a Cartesian plane.
+			Turtle graphics is a key feature of the Logo programming language."
+		</p>
+		<p>
 			Here, you'll be programming in JavaScript instead of the Logo language, but you still get to watch a triangle race around the screen!
 			The interactive prompt below exposes the valiable <code>t</code>, which is an instance of class <code>Turtle</code>.
 			Here's a quick rundown of its methods.
@@ -290,12 +307,11 @@ a[href]{
 			<tr><td><code>t.lt(deg)</code></td><td>Left turn. Rotate <code>deg</code> counter-clockwise.</td></tr>
 			<tr><td><code>t.pu()</code></td><td>Pen up. Turtle no longer traces line along its path.</td></tr>
 			<tr><td><code>t.pd()</code></td><td>Pen down. Turtle resumes tracing line along its path.</td></tr>
-			<tr><td><code>t.clean()</code></td><td>Revert screen to current background color.</td></tr>
-			<tr><td><code>t.home()</code></td><td>Revert turtle to center screen (0,0).</td></tr>
+			<tr><td><code>t.clean(bgColor)</code></td><td>Revert screen to given or last set background color.</td></tr>
+			<tr><td><code>t.home()</code></td><td>Revert turtle to center screen (0,0) and facing "north".</td></tr>
 			<tr><td><code>t.clear()</code></td><td>Equivalent to <code>clean()</code> and <code>home()</code> together.</td></tr>
 			<tr><td><code>t.reset()</code></td><td>Same as <code>clear()</code>, but also restores defaults.</td></tr>
-			<tr><td><code>t.fg(color)</code></td><td>Foreground. Sets foreground (pen) color. Accepts any CSS color.</td></tr>
-			<tr><td><code>t.bg(color)</code></td><td>Background. Sets background (screen) color. Accepts any CSS color.</td></tr>
+			<tr><td><code>t.color(color)</code></td><td>Sets pen color. Accepts any CSS color.</td></tr>
 			<tr><td><code>t.width(n)</code></td><td>Sets the width in px of the pen stroke.</td></tr>
 			<tr><td><code>t.absXY(x, y)</code></td><td>Moves turtle to absolute position, where origin (0,0) is center of screen.</td></tr>
 			<tr><td><code>t.absX(x)</code></td><td>Moves turtle to absolute X position, leaving Y coord unchanged.</td></tr>
@@ -316,9 +332,9 @@ a[href]{
 			<tr><td><code>t.info.heading()</code></td><td>Turtle's orientation in degrees, where 0 is "north".</td></tr>
 			<tr><td><code>t.info.pu()</code></td><td><code>true</code> if pen is up, <code>false</code> otherwise.</td></tr>
 			<tr><td><code>t.info.pd()</code></td><td><code>true</code> if pen is down, <code>false</code> otherwise.</td></tr>
-			<tr><td><code>t.info.fg()</code></td><td>Foreground color.</td></tr>
-			<tr><td><code>t.info.bg()</code></td><td>Background color.</td></tr>
-			<tr><td><code>t.info.width()</code></td><td>Width in px of pen stroke.</td></tr>
+			<tr><td><code>t.info.color()</code></td><td>Pen color.</td></tr>
+			<tr><td><code>t.info.background()</code></td><td>Background color.</td></tr>
+			<tr><td><code>t.info.width()</code></td><td>Width in pixels of pen stroke.</td></tr>
 			<tr><td><code>t.info.rand([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
 			</tbody>
 		</table>
@@ -326,7 +342,7 @@ a[href]{
 		<p>
 			JavaScript provides a number of ways to do loops, and you're certainly free to use them in your JavaScript Turtle program.
 			Alternatively, the turtle gives you a couple of its own ways to do things over and over again.
-			This allows you to do loops the "turtle" way, which isn't necessarily a better way.
+			This allows you to do loops the "turtle" way, which isn't necessarily better, just fitting with the rest of the API.
 		</p>
 		<table>
 			<thead><tr><th>method</th><th>description</th></tr></thead>
@@ -337,22 +353,24 @@ a[href]{
 		</table>
 		<h2>Depth notes II</h2>
 		<p>
-			Some turtle graphics programs finish quickly and are fun to watch, but others run a long time.
-			This is because the drawing is rendered sequentially, piece by piece.
-			To speed things up a bit, when the queue of things remaining to do gets quite long, more and more of these "pieces" are batched together between renders.
+			Some drawings finish quickly, while others take a long time.
+			This is because the drawing is rendered sequentially, piece by piece, and sometimes there are lots of pieces.
+			To speed things up, when the number of pieces gets quite long, more and more of them are batched together between renders.
 			When the drawing approaches the end, this batching decreases and then stops.
-			This results in a visual effect where the turtle initially tears through the drawing at a high rate of speed, and then slows to a more leisurely pace at the end.
+			You'll see the turtle initially tear through the drawing at a high rate of speed, and then slow to a more leisurely pace at the end.
+			Your machine is actually working harder at the beginning of the drawing than at the end!
 		</p>
 		<h2>Depth notes III</h2>
 		<p>
-			Numeric values given and received by the turtle (lengths, degrees) needn't be integers, and may often have fractional components.
-			Of course this is given, since this is JavaScript.
-			For some reason it occurred to me to mention it.
-		</p>
-		<p>
-			Color values given and received by the turtle needn't be fully opaque colors, and may in fact be colors of the form <code>"rgba(...)"</code> and <code>"hsla(...)"</code>.
+			Since this is JavaScript, numeric values given and received by the turtle (lengths, degrees) are not limited to integers.
+			I guess this is obvious but it occurred to me to mention it.
 		</p>
 		<h2>Depth notes IV</h2>
+		<p>
+			Colors can take any form accepted by CSS or canvas.
+			This includes <code>"#fff"</code>, <code>"#ffffff"</code>, <code>"rgb(...)"</code>, <code>"hsl(...)"</code>, and even <code>"rgba(...)"</code> and <code>"hsla(...)"</code>.
+		</p>
+		<h2>Depth notes V</h2>
 		<p>
 			Lines drawn on <code>&lt;canvas&gt;</code> elements are usually anti-aliased, unlike typical Logo-based turtle graphics.
 			Watch for interesting moir&#233; patterns when such lines are grouped closely together.
@@ -368,14 +386,14 @@ t.reset()
 })
 		</pre>
 
-		<h3>Lots of circles <a href="#" class="runner" title="run this sample program" data-code="circles-code">run</a></h3>
+		<h3>Fun with spirograph <a href="#" class="runner" title="run this sample program" data-code="circles-code">run</a></h3>
 		<pre id="circles-code">
 t.reset()
-.fg('rgba(255,255,255,0.2)')
-.repeat(8, function(){
+.repeat(10, function(){
   t.repeat(36, function(i){
-    t.fg('hsla('+(i*10)+',50%,50%,0.3)').repeat(36, function(){
-      t.fd(30).rt(10)
+    t.color('hsla('+(i*10)+',50%,50%,0.3)')
+    .repeat(36, function(){
+      t.fd(27).rt(10)
     }).rt(10);
   }).rt(1);
 });
@@ -383,7 +401,7 @@ t.reset()
 		<h3>Sunburst <a href="#" class="runner" title="run this sample program" data-code="sunburst-code">run</a></h3>
 		<pre id="sunburst-code">
 t.reset()
-.fg('rgba(255,255,255,0.15)')
+.color('rgba(255,255,255,0.15)')
 .repeat(720, function(i){
   if(i%72 < 36){
     t.fd(2000).bk(2000);
@@ -417,23 +435,50 @@ var koch = (function(){
     frag(len,depth); t.lt(120);
   }
 })();
-t.reset().bk(300).clean().rt(30).fg('#0f0');
+t.reset().bk(300).clean().rt(30).color('#0f0');
 koch(550, 6);
 		</pre>
-		<h3>Flower <a href="#" class="runner" title="run this sample program" data-code="flower-code">run</a></h3>
-		<pre id="flower-code">
-function flower(arms, length, count){
-  if (count < 1) return;
-  for (var i=0; i&lt;arms; i++) {
-    t.lt(360/arms);
-    t.pd().fd(length);
-    flower(arms, (length * 2) / arms, count - 1);
-    t.pu();
-    t.bk(length);
+		<h3>Tree <a href="#" class="runner" title="run this sample program" data-code="tree-code">run</a></h3>
+		<pre id="tree-code">
+function tree(length, branches, depth, origDepth){
+  if (origDepth === undefined) origDepth = depth;
+  var l = t.info.rand(length*.95,length*1.05);
+  t.color('rgba(0,0,0,'+depth/origDepth+')').fd(l);
+  var angle = 120/(branches-1);
+  if (depth &gt; 0) {
+    t.lt(60);
+    for (var i=0; i&lt;branches; i++){
+      tree(length*(2/3), branches, depth-1, origDepth);
+      t.rt(angle);
+    }
+    t.lt(angle+60);
+  }
+  t.pu().bk(l).pd();
+}
+t.clear().pu().bk(250).pd().clean('#fff');
+tree(200,4,7);
+		</pre>
+		<h3>Heighway dragon <a href="#" class="runner" title="run this sample program" data-code="dragon-code">run</a></h3>
+		<pre id="dragon-code">
+function dragon(length, iters){
+  t.lt(90);
+  var d = [true];
+  for (var i=0; i&lt;iters; i++) {
+    var len = d.length;
+    d.push(true);
+    for (var j=len-1; j&gt;=0; j--) {
+      d.push(!d[j]);
+    }
+    length = Math.sqrt((length * length) / 2);
+  }
+  var c = 0;
+  for (var i=0; i&lt;d.length; i++) {
+    c += .01;
+    t.color('hsl('+c+',100%,70%)').fd(length)[d[i]?'rt':'lt'](90);
   }
 }
-t.reset().fg('#909').bg('#fff').clear();
-flower(7,200,4);
+t.reset().absXY(250,140).clean();
+dragon(470,15)
 		</pre>
 		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run</a></h3>
 		<pre id="triangles-code">
@@ -451,13 +496,13 @@ function triangle(len, level){
   }
 }
 t.reset().absXY(-300, -200)
-.rt(30).bg('#555').fg('#ffe').clean();
+.rt(30).color('#000').clean('#fff');
 triangle(600, 7);
 		</pre>
-		<h3>Example of feeding turtle state back into itself <a href="#" class="runner" title="run this sample program" data-code="state-code">run</a></h3>
+		<h3>This thing <a href="#" class="runner" title="run this sample program" data-code="state-code">run</a></h3>
 		<pre id="state-code">
 t.reset()
-.fg('rgba(255,255,255,0.1)')
+.color('rgba(255,255,255,0.1)')
 .repeat(360, function(i){
   t.pu().home().pd()
   .repeat(80, function(){
@@ -617,7 +662,6 @@ $('body').on('keydown', function(ev){
 
 var $turtle = $('#turtle');
 t.on('move', function(args){
-	console.log(args.x)
 	$turtle.css({
 		left:args.x+'px',
 		top:args.y+'px'
