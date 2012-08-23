@@ -31,6 +31,8 @@ SOFTWARE.
 body{
 	font-size:14px;
 	font-family:helvetica,arial,sans-serif;
+	background:#aaa;
+	overflow:hidden;
 }
 h1,h2,h3,h4,h5,h6,p,ol,ul,dl,pre{
 	margin-top:10px;
@@ -52,7 +54,7 @@ a[href]{
 	letter-spacing:1px;
 }
 #turtle{
-	position:fixed;
+	position:absolute;
 	top:0;
 	left:0;
 	width:41px;
@@ -65,7 +67,7 @@ a[href]{
 	        transform-origin: 50% 50%;
 }
 #c{
-	position:fixed;
+	position:absolute;
 	top:0;
 	left:0;
 	right:0;
@@ -75,7 +77,7 @@ a[href]{
 	background-color:#000;
 }
 #control{
-	position:fixed;
+	position:absolute;
 	left:0;
 	right:0;
 	bottom:0;
@@ -126,7 +128,6 @@ a[href]{
 #biginput{
 	height:1em;
 	resize:none;
-	position: relative;
 	-webkit-transition:height 300ms ease-in-out;
 	   -moz-transition:height 300ms ease-in-out;
 	        transition:height 300ms ease-in-out;
@@ -196,9 +197,8 @@ a[href]{
 	display:none;
 }
 #help a[href]{
-	color:inherit;
+	color:#fff;
 	text-decoration: none;
-	border-bottom:1px dotted rgba(200,255,255,0.3);
 }
 #helpesctip{
 	position:absolute;
@@ -273,6 +273,12 @@ a[href]{
 	padding-left:25px;
 	margin-right:-25px;
 	padding-right:25px;
+	position: relative;
+}
+.runner{
+	position: absolute;
+	top:10px;
+	right:25px;
 }
 </style>
 <script src="jquery-1.8.0.min.js"></script>
@@ -499,7 +505,7 @@ t.reset().absXY(-300, -200)
 .rt(30).color('#000').clean('#fff');
 triangle(600, 7);
 		</pre>
-		<h3>This thing <a href="#" class="runner" title="run this sample program" data-code="state-code">run</a></h3>
+		<h3>Another sample <a href="#" class="runner" title="run this sample program" data-code="state-code">run</a></h3>
 		<pre id="state-code">
 t.reset()
 .color('rgba(255,255,255,0.1)')
