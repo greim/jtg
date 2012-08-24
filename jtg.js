@@ -315,6 +315,12 @@ window.Turtle = function(canvas){
 		},
 		background: function(){
 			return background;
+		},
+		oob: function(){
+			return pos.x > canvasWidth
+				|| pos.y > canvasHeight
+				|| pos.x < 0
+				|| pos.y < 0;
 		}
 	};
 
