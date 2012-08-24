@@ -433,7 +433,7 @@ t.reset()
 		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run this example</a></h3>
 		<pre id="triangles-code">
 function triangle(len, level){
-  if (level < 1) {
+  if (level &lt; 1) {
     t.repeat(3, function(){
       t.fd(len).rt(120);
     });
@@ -445,8 +445,7 @@ function triangle(len, level){
     })
   }
 }
-t.reset().absXY(-300, -200)
-.rt(30).color('#000').clean('#fff');
+t.reset().absXY(-300, -200).rt(30).clean();
 triangle(600, 7);
 		</pre>
 		<h3>Koch snowflake <a href="#" class="runner" title="run this sample program" data-code="koch-code">run this example</a></h3>
@@ -477,14 +476,18 @@ function tree(length, branches, depth, origDepth){
   if (origDepth === undefined) origDepth = depth;
   var l = t.info.rand(length*.95,length*1.05);
   t.color('rgba(255,255,255,'+(depth+1)/origDepth+')').fd(l);
-  var angle = 120/(branches-1);
+  var angle = 180/branches;
   if (depth &gt; 0) {
-    t.lt(60);
+    t.lt(90);
     for (var i=0; i&lt;branches; i++){
+      t.rt((angle/2));
+      var angleJitter = t.info.rand(-5,5);
+      t.rt(angleJitter);
       tree(length*(3/4), branches, depth-1, origDepth);
-      t.rt(angle);
+      t.lt(angleJitter);
+      t.rt(angle/2);
     }
-    t.lt(angle+60);
+    t.lt(90);
   }
   t.pu().bk(l).pd();
 }
@@ -509,7 +512,7 @@ function dragon(length, iters){
     t.color('hsl('+c+',100%,70%)').fd(length)[d[i]?'rt':'lt'](90);
   }
 }
-t.reset().absXY(250,140).clean().lt(90);
+t.reset().absXY(250,170).clean().lt(95);
 dragon(470,15);
 		</pre>
 		<h3>Another sample <a href="#" class="runner" title="run this sample program" data-code="state-code">run this example</a></h3>
