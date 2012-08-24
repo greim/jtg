@@ -264,7 +264,7 @@ a[href]{
 #helpB{
 	width:40%;
 	right:0;
-	border-left:1px dotted rgba(255,255,255,0.2);
+	border-left:1px dotted rgba(255,255,255,0.15);
 }
 #helpB h3{
 	border-top:1px dotted rgba(255,255,255,0.15);
@@ -277,8 +277,15 @@ a[href]{
 }
 .runner{
 	position: absolute;
-	top:10px;
-	right:25px;
+	top:0;
+	right:0;
+	padding:5px 15px;
+	border:1px dotted rgba(255,255,255,0.15);
+	border-width:0 0 1px 1px;
+	color:#aaa!important;
+}
+a[href].runner:hover{
+	background:rgba(255,255,255,0.05);
 }
 </style>
 <script src="jquery-1.8.0.min.js"></script>
@@ -292,7 +299,8 @@ a[href]{
 	<div id="helpA">
 		<h2>Welcome to JavaScript Turtle Graphics!</h2>
 		<p>
-			Type your commands below and see them faithfully executed by our eponymous turtle.
+			Type your commands at the prompt and see them faithfully executed by our eponymous turtle.
+			Press ESC to toggle between the prompt and this help screen.
 		</p>
 		<p>
 			What's turtle graphics?
@@ -346,7 +354,7 @@ a[href]{
 		</table>
 		<h2>Depth notes I</h2>
 		<p>
-			JavaScript provides a number of ways to do loops, and you're certainly free to use them in your JavaScript Turtle program.
+			JavaScript provides a number of ways to do loops, and you're certainly free to use them here.
 			Alternatively, the turtle gives you a couple of its own ways to do things over and over again.
 			This allows you to do loops the "turtle" way, which isn't necessarily better, just fitting with the rest of the API.
 		</p>
@@ -359,40 +367,48 @@ a[href]{
 		</table>
 		<h2>Depth notes II</h2>
 		<p>
+			Colors can take any form accepted by CSS or canvas.
+			This includes <code>"#fff"</code>, <code>"#ffffff"</code>, <code>"rgb(...)"</code>, <code>"hsl(...)"</code>, and even <code>"rgba(...)"</code> and <code>"hsla(...)"</code>.
+		</p>
+		<h2>Depth notes III</h2>
+		<p>
 			Some drawings finish quickly, while others take a long time.
 			This is because the drawing is rendered sequentially, piece by piece, and sometimes there are lots of pieces.
 			To speed things up, when the number of pieces gets quite long, more and more of them are batched together between renders.
 			When the drawing approaches the end, this batching decreases and then stops.
 			You'll see the turtle initially tear through the drawing at a high rate of speed, and then slow to a more leisurely pace at the end.
-			Your machine is actually working harder at the beginning of the drawing than at the end!
-		</p>
-		<h2>Depth notes III</h2>
-		<p>
-			Since this is JavaScript, numeric values given and received by the turtle (lengths, degrees) are not limited to integers.
-			I guess this is obvious but it occurred to me to mention it.
+			Your machine is actually working harder at the beginning of the drawing than at the end.
 		</p>
 		<h2>Depth notes IV</h2>
 		<p>
-			Colors can take any form accepted by CSS or canvas.
-			This includes <code>"#fff"</code>, <code>"#ffffff"</code>, <code>"rgb(...)"</code>, <code>"hsl(...)"</code>, and even <code>"rgba(...)"</code> and <code>"hsla(...)"</code>.
-		</p>
-		<h2>Depth notes V</h2>
-		<p>
-			Lines drawn on <code>&lt;canvas&gt;</code> elements are usually anti-aliased, unlike typical Logo-based turtle graphics.
-			Watch for interesting moir&#233; patterns when such lines are grouped closely together.
+			Who am I? My name is Greg Reimer.
+			I build web applications for fun and profit.
+			Find me on <a href="https://github.com/greim">github</a> and <a href="http://www.linkedin.com/profile/view?id=1191459">LinkedIn</a>.
+			This turtle graphics project is also <a href="https://github.com/greim/jtg">on github</a> under the MIT license.
+			If you write an awesome sample program that you think should be included here, send me a pull request!
 		</p>
 	</div>
 	<div id="helpB">
-		<h2>Sample Programs</h2>
-		<h3>Spiral <a href="#" class="runner" title="run this sample program" data-code="spiral-code">run</a></h3>
-		<pre id="spiral-code">
+		<h2>Sample Code</h2>
+		<h3>Sunburst <a href="#" class="runner" title="run this sample program" data-code="sunburst-code">run this example</a></h3>
+		<pre id="sunburst-code">
 t.reset()
-.repeat(1800, function(i){
-  t.fd(i/90).rt(5)
+.color('rgba(255,255,255,0.15)')
+.repeat(720, function(i){
+  if(i%72 < 36){
+    t.fd(2000).bk(2000);
+  }
+  t.rt(.5);
 })
 		</pre>
-
-		<h3>Fun with spirograph <a href="#" class="runner" title="run this sample program" data-code="circles-code">run</a></h3>
+		<h3>Interesting moir&#233; <a href="#" class="runner" title="run this sample program" data-code="moire-code">run this example</a></h3>
+		<pre id="moire-code">
+t.reset()
+.repeat(1000, function(i){
+  t.fd(i).rt(90.1)
+})
+		</pre>
+		<h3>Fun with spirograph <a href="#" class="runner" title="run this sample program" data-code="circles-code">run this example</a></h3>
 		<pre id="circles-code">
 t.reset()
 .repeat(10, function(){
@@ -404,25 +420,26 @@ t.reset()
   }).rt(1);
 });
 		</pre>
-		<h3>Sunburst <a href="#" class="runner" title="run this sample program" data-code="sunburst-code">run</a></h3>
-		<pre id="sunburst-code">
-t.reset()
-.color('rgba(255,255,255,0.15)')
-.repeat(720, function(i){
-  if(i%72 < 36){
-    t.fd(2000).bk(2000);
+		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run this example</a></h3>
+		<pre id="triangles-code">
+function triangle(len, level){
+  if (level < 1) {
+    t.repeat(3, function(){
+      t.fd(len).rt(120);
+    });
+  } else {
+    t.repeat(3, function(){
+      t.pd();
+      triangle(len/2, level-1);
+      t.pu().fd(len).rt(120);
+    })
   }
-  t.rt(.5);
-})
+}
+t.reset().absXY(-300, -200)
+.rt(30).color('#000').clean('#fff');
+triangle(600, 7);
 		</pre>
-		<h3>Interesting moir&#233; <a href="#" class="runner" title="run this sample program" data-code="moire-code">run</a></h3>
-		<pre id="moire-code">
-t.reset()
-.repeat(1000, function(i){
-  t.fd(i).rt(90.1)
-})
-		</pre>
-		<h3>Koch snowflake <a href="#" class="runner" title="run this sample program" data-code="koch-code">run</a></h3>
+		<h3>Koch snowflake <a href="#" class="runner" title="run this sample program" data-code="koch-code">run this example</a></h3>
 		<pre id="koch-code">
 var koch = (function(){
   function frag(len, depth){
@@ -444,30 +461,29 @@ var koch = (function(){
 t.reset().bk(300).clean().rt(30).color('#0f0');
 koch(550, 6);
 		</pre>
-		<h3>Tree <a href="#" class="runner" title="run this sample program" data-code="tree-code">run</a></h3>
+		<h3>Tree <a href="#" class="runner" title="run this sample program" data-code="tree-code">run this example</a></h3>
 		<pre id="tree-code">
 function tree(length, branches, depth, origDepth){
   if (origDepth === undefined) origDepth = depth;
   var l = t.info.rand(length*.95,length*1.05);
-  t.color('rgba(0,0,0,'+depth/origDepth+')').fd(l);
+  t.color('rgba(255,255,255,'+depth/origDepth+')').fd(l);
   var angle = 120/(branches-1);
   if (depth &gt; 0) {
     t.lt(60);
     for (var i=0; i&lt;branches; i++){
-      tree(length*(2/3), branches, depth-1, origDepth);
+      tree(length*(3/4), branches, depth-1, origDepth);
       t.rt(angle);
     }
     t.lt(angle+60);
   }
   t.pu().bk(l).pd();
 }
-t.clear().pu().bk(250).pd().clean('#fff');
-tree(200,4,7);
+t.reset().bk(280).clean();
+tree(180,4,7);
 		</pre>
-		<h3>Heighway dragon <a href="#" class="runner" title="run this sample program" data-code="dragon-code">run</a></h3>
+		<h3>Heighway dragon <a href="#" class="runner" title="run this sample program" data-code="dragon-code">run this example</a></h3>
 		<pre id="dragon-code">
 function dragon(length, iters){
-  t.lt(90);
   var d = [true];
   for (var i=0; i&lt;iters; i++) {
     var len = d.length;
@@ -483,29 +499,10 @@ function dragon(length, iters){
     t.color('hsl('+c+',100%,70%)').fd(length)[d[i]?'rt':'lt'](90);
   }
 }
-t.reset().absXY(250,140).clean();
-dragon(470,15)
+t.reset().absXY(250,140).clean().lt(90);
+dragon(470,15);
 		</pre>
-		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run</a></h3>
-		<pre id="triangles-code">
-function triangle(len, level){
-  if (level < 1) {
-    t.repeat(3, function(){
-      t.fd(len).rt(120);
-    });
-  } else {
-    t.repeat(3, function(){
-      t.pd();
-      triangle(len/2, level-1);
-      t.pu().fd(len).rt(120);
-    })
-  }
-}
-t.reset().absXY(-300, -200)
-.rt(30).color('#000').clean('#fff');
-triangle(600, 7);
-		</pre>
-		<h3>Another sample <a href="#" class="runner" title="run this sample program" data-code="state-code">run</a></h3>
+		<h3>Another sample <a href="#" class="runner" title="run this sample program" data-code="state-code">run this example</a></h3>
 		<pre id="state-code">
 t.reset()
 .color('rgba(255,255,255,0.1)')
@@ -632,7 +629,7 @@ var t = turtle;
 
 
 (function(){
-	var collapsedHtml = '<p id="esctip">hit ESC for help</p><input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
+	var collapsedHtml = '<p id="esctip">press ESC to clear screen<br>press F1 to show/hide help and code samples</p><input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
 	var expandedHtml = '<span id="althint">EXECUTE: ALT+ENTER<br>HISTORY: ALT+UP/DOWN</span><p id="esctip">hit ESC for help</p><textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
 	$('#control').html(collapsedHtml);
 	$('body').on('click','#expand', function(ev){
@@ -653,8 +650,10 @@ var t = turtle;
 	$('body').on('mouseleave','#expand, #collapse', function(ev){ hideTip(); });
 })();
 
+$('#input').val("t.color('rgba(255,255,255,0.3)').repeat(180, function(){ t.fd(200).rt(94); }); /* press ENTER to see the results */");
+
 $('body').on('keydown', function(ev){
-	if (ev.keyCode === 27) {
+	if (ev.keyCode === 112) {
 		var $help = $('#help');
 		if ($help.hasClass('hidden')) {
 			$help.hide().removeClass('hidden').fadeIn(200);
@@ -663,6 +662,9 @@ $('body').on('keydown', function(ev){
 				$help.addClass('hidden');
 			});
 		}
+	} else if (ev.keyCode === 27) {
+		ev.preventDefault();
+		t.clear();
 	}
 });
 
