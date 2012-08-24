@@ -406,9 +406,9 @@ t.reset()
 		<pre id="random-code">
 t.reset()
 .color('rgba(255,255,255,0.1)')
-.repeat(100000, function(){
+.repeat(200000, function(){
   t.fd(3).rt(t.info.rand(-10,10))
-  if (t.info.oob()) t.home()
+  if (t.info.oob()) t.home().rt(t.info.rand(360))
 })
 		</pre>
 		<h3>Interesting moir&#233; <a href="#" class="runner" title="run this sample program" data-code="moire-code">run this example</a></h3>
@@ -476,7 +476,7 @@ koch(550, 6);
 function tree(length, branches, depth, origDepth){
   if (origDepth === undefined) origDepth = depth;
   var l = t.info.rand(length*.95,length*1.05);
-  t.color('rgba(255,255,255,'+depth/origDepth+')').fd(l);
+  t.color('rgba(255,255,255,'+(depth+1)/origDepth+')').fd(l);
   var angle = 120/(branches-1);
   if (depth &gt; 0) {
     t.lt(60);
@@ -489,7 +489,7 @@ function tree(length, branches, depth, origDepth){
   t.pu().bk(l).pd();
 }
 t.reset().bk(280).clean();
-tree(180,4,7);
+tree(180,4,6);
 		</pre>
 		<h3>Heighway dragon <a href="#" class="runner" title="run this sample program" data-code="dragon-code">run this example</a></h3>
 		<pre id="dragon-code">
