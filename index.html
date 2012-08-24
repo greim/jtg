@@ -629,19 +629,22 @@ var t = turtle;
 
 
 (function(){
-	var collapsedHtml = '<p id="esctip">press ESC to clear screen<br>press F1 to show/hide help and code samples</p><input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
-	var expandedHtml = '<span id="althint">EXECUTE: ALT+ENTER<br>HISTORY: ALT+UP/DOWN</span><p id="esctip">hit ESC for help</p><textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
+	var hintsHtml = '<p id="esctip">press ESC to clear screen<br>press F1 to show/hide help and code samples<br>press UP or DOWN to navigate history</p>';
+	var collapsedHtml = hintsHtml+'<input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
+	var expandedHtml = '<span id="althint">EXECUTE: ALT+ENTER<br>HISTORY: ALT+UP/DOWN</span>'+hintsHtml+'<textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
 	$('#control').html(collapsedHtml);
 	$('body').on('click','#expand', function(ev){
 		ev.preventDefault();
 		$('#control').html(expandedHtml);
 		$('#biginput').css('height','10em');
+		$('#biginput').focus();
 	});
 	$('body').on('click','#collapse', function(ev){
 		ev.preventDefault();
 		$('#biginput').css('height','1em');
 		setTimeout(function(){
 			$('#control').html(collapsedHtml);
+			$('#input').focus();
 		},350);
 	});
 	function showTip(m){ $('#control').append('<p id="tip">'+m+'</p>'); }
@@ -650,7 +653,7 @@ var t = turtle;
 	$('body').on('mouseleave','#expand, #collapse', function(ev){ hideTip(); });
 })();
 
-$('#input').val("t.color('rgba(255,255,255,0.3)').repeat(180, function(){ t.fd(200).rt(94); }); /* press ENTER to see the results */");
+$('#input').val("t.color('rgba(255,255,255,0.3)').repeat(180, function(){ t.fd(200).rt(94); }); /* press ENTER to see the results */").focus();
 
 $('body').on('keydown', function(ev){
 	if (ev.keyCode === 112) {
