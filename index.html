@@ -27,6 +27,11 @@ SOFTWARE.
 
 <head>
 <title>JavaScript Turtle Graphics</title>
+
+	<meta property="og:title" content="JavaScript Turtle Graphics">
+	<meta property="og:image" content="/turtle/spiro.jpg">
+	<meta property="og:description" content="Fun for programming geeks. Use simple JavaScript commands to make the turtle race around the screen.">
+
 <style type="text/css">
 body{
 	font-size:14px;
@@ -402,6 +407,21 @@ t.reset()
   t.rt(.5);
 })
 		</pre>
+		<h3>Interesting moir&#233; <a href="#" class="runner" title="run this sample program" data-code="moire-code">run this example</a></h3>
+		<pre id="moire-code">
+t.reset()
+.repeat(1000, function(i){
+  t.fd(i).rt(90.1)
+})
+		</pre>
+		<h3>Phi rays <a href="#" class="runner" title="run this sample program" data-code="phi-code">run this example</a></h3>
+		<pre id="phi-code">
+var phi = (Math.sqrt(5) + 1)/2;
+t.reset().color('rgba(255,255,255,0.2)')
+.repeat(987, function(){
+  t.fd(2000).pu().bk(2000).pd().rt(360*phi);
+});
+		</pre>
 		<h3>Random paths <a href="#" class="runner" title="run this sample program" data-code="random-code">run this example</a></h3>
 		<pre id="random-code">
 t.reset()
@@ -409,13 +429,6 @@ t.reset()
 .repeat(200000, function(){
   t.fd(3).rt(t.info.rand(-10,10))
   if (t.info.oob()) t.home().rt(t.info.rand(360))
-})
-		</pre>
-		<h3>Interesting moir&#233; <a href="#" class="runner" title="run this sample program" data-code="moire-code">run this example</a></h3>
-		<pre id="moire-code">
-t.reset()
-.repeat(1000, function(i){
-  t.fd(i).rt(90.1)
 })
 		</pre>
 		<h3>Fun with spirograph <a href="#" class="runner" title="run this sample program" data-code="circles-code">run this example</a></h3>
