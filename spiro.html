@@ -69,6 +69,19 @@ body{
 	padding:10px;
 	text-decoration: none;
 }
+#wfi{
+}
+#wfi-num{
+	position: absolute;
+	left:0;
+	right:0;
+	text-align: center;
+	top:50%;
+	color:#2a2a2a;
+	font:normal 200px/1.5 sans-serif;
+	display: block;
+}
+
 </style>
 <script src="jquery-1.8.0.min.js"></script>
 <script src="jtg.js"></script>
@@ -105,17 +118,26 @@ t.on('rotate', function(deg){
 
 t.init();
 
-setTimeout(function(){
-	t.repeat(10, function(){
-		t.repeat(36, function(i){
-			t.color('hsla('+(i*10)+',50%,50%,0.3)')
-			.repeat(36, function(){
-				t.fd(27).rt(10)
-			}).rt(10);
-		}).rt(1);
-	});
-},1000);
 
+var w = 3;
+$('body').append('<span id="wfi-num">'+w+'</span>');
+setTimeout(function next(){
+	$('#wfi-num').text(w--);
+	if (w >= 0){
+		setTimeout(next,1000);
+	} else {
+		$('#wfi-num').fadeOut(300, function(){
+			t.repeat(10, function(){
+				t.repeat(36, function(i){
+					t.color('hsla('+(i*10)+',50%,50%,0.3)')
+					.repeat(36, function(){
+						t.fd(27).rt(10)
+					}).rt(10);
+				}).rt(1);
+			});
+		});
+	}
+},500);
 
 </script>
 </body>
