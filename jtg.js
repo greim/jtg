@@ -143,7 +143,7 @@ window.Turtle = function(canvas){
 	}
 
 	// ######################################################
-	// move forward, back, left, right
+	// move forward, back
 	T.fd = function(amount) {
 		pos.x += Math.sin(heading) * -amount;
 		pos.y += Math.cos(heading) * -amount;
