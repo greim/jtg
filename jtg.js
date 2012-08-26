@@ -22,6 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/* ########################################################################## */
+
+/*
+This library exposes window.Turte, which is a constructor for a turtle graphics
+environment. Pass a canvas element to the constructor, like so:
+
+    var canvas = document.getElementById('mycanvas');
+    var t = new Turtle(canvas);
+
+...then call methods on the "t" variable, like so:
+
+    t.fd(100).lt(90); // forward 100px, left turn 90deg
+
+...and a drawing will subsequently be drawn onto the canvas.
+*/
+
 window.Turtle = function(canvas){
 
 	var slice = [].slice;

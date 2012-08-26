@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+
+<!--
+Copyright (c) 2012 Greg Reimer
+http://obadger.com/
+"gregreimer" "at" "gmail" "dot" "com"
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<head>
+<title>Repeated Circles - JavaScript Turtle Graphics</title>
+
+	<meta property="og:title" content="Repeated Circles - JavaScript Turtle Graphics">
+	<meta property="og:image" content="/turtle/spiro.jpg">
+	<meta property="og:description" content="A bunch of circles drawn using a JavaScript turtle graphics program.">
+
+<style type="text/css">
+body{
+	font:normal 14px/1.4 sans-serif;
+}
+#turtle{
+	position:absolute;
+	top:0;
+	left:0;
+	width:41px;
+	height:41px;
+	margin:-21px;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAIFJREFUeNrs1dEGwDAMRuEm9t7rnjwzNmaM0j+TcXLVq/gcoRYRrfp4+8GABAkSJMjvkat6oSV8i8dCq4y8V9yqIq+K0pourtjPd1feprLks56spidUbOqaqpJv1SQ1PamitKai5MiCqZqL4mT4u0GCBAkSJEiQIEGCBAlyfHYBBgA6tCSzDhxhwgAAAABJRU5ErkJggg==);
+	-webkit-transform-origin: 50% 50%;
+	   -moz-transform-origin: 50% 50%;
+	    -ms-transform-origin: 50% 50%;
+	     -o-transform-origin: 50% 50%;
+	        transform-origin: 50% 50%;
+}
+#c{
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	width:100%;
+	height:100%;
+	background-color:#000;
+}
+#return{
+	position:absolute;
+	color:#666;
+	color:rgba(255,255,255,0.2);
+	left:0;
+	top:0;
+	padding:10px;
+	text-decoration: none;
+}
+</style>
+<script src="jquery-1.8.0.min.js"></script>
+<script src="jtg.js"></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<span id="turtle"></span>
+<a id="return" href=".">&lt; return to turtle graphics main page</a>
+<script>
+
+var canvas = document.getElementById('c');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var turtle = new Turtle(canvas);
+var t = turtle;
+
+var $turtle = $('#turtle');
+t.on('move', function(args){
+	$turtle.css({
+		left:args.x+'px',
+		top:args.y+'px'
+	});
+});
+
+t.on('rotate', function(deg){
+	$turtle.css({
+		'-webkit-transform':'rotate('+Math.round(-deg)+'deg)',
+		'-moz-transform':'rotate('+Math.round(-deg)+'deg)',
+		'-ms-transform':'rotate('+Math.round(-deg)+'deg)',
+		'-o-transform':'rotate('+Math.round(-deg)+'deg)',
+		'transform':'rotate('+Math.round(-deg)+'deg)'
+	});
+});
+
+t.init();
+
+setTimeout(function(){
+	t.repeat(10, function(){
+		t.repeat(36, function(i){
+			t.color('hsla('+(i*10)+',50%,50%,0.3)')
+			.repeat(36, function(){
+				t.fd(27).rt(10)
+			}).rt(10);
+		}).rt(1);
+	});
+},1000);
+
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
