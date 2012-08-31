@@ -465,7 +465,7 @@ triangle(600, 7);
 		<pre id="koch-code">
 var koch = (function(){
   function frag(len, depth){
-    if (depth > 1) {
+    if (depth &gt; 1) {
       frag(len/3, depth-1); t.rt(60);
       frag(len/3, depth-1); t.lt(120);
       frag(len/3, depth-1); t.rt(60);
@@ -482,6 +482,55 @@ var koch = (function(){
 })();
 t.reset().bk(300).clean().rt(30).color('#0f0');
 koch(550, 6);
+		</pre>
+		<h3>Koch snowflake with subtriangles randomly oriented <a href="#" class="runner" title="run this sample program" data-code="ran-koch-code">run this example</a></h3>
+		<pre id="ran-koch-code">
+var kochRandom = (function(){
+  function frag(len, depth){
+    if (depth &gt; 1) {
+      var r = Math.random() &gt; 0.5;
+      frag(len/3, depth-1); t[r?'rt':'lt'](60);
+      frag(len/3, depth-1); t[r?'lt':'rt'](120);
+      frag(len/3, depth-1); t[r?'rt':'lt'](60);
+      frag(len/3, depth-1);
+    } else {
+      t.fd(len);
+    }
+  }
+  return function(len, depth){
+    frag(len,depth); t.lt(120);
+    frag(len,depth); t.lt(120);
+    frag(len,depth); t.lt(120);
+  }
+})();
+t.reset().bk(300).clean().rt(30).color('#90f');
+kochRandom(550, 6);
+		</pre>
+		<h3>Lots of randomized Koch snowflakes overlaid <a href="#" class="runner" title="run this sample program" data-code="ran-koch-code-lots">run this example</a></h3>
+		<pre id="ran-koch-code-lots">
+var kochRandom = (function(){
+  function frag(len, depth){
+    if (depth &gt; 1) {
+      var r = Math.random() &gt; 0.5;
+      frag(len/3, depth-1); t[r?'rt':'lt'](60);
+      frag(len/3, depth-1); t[r?'lt':'rt'](120);
+      frag(len/3, depth-1); t[r?'rt':'lt'](60);
+      frag(len/3, depth-1);
+    } else {
+      t.fd(len);
+    }
+  }
+  return function(len, depth){
+    frag(len,depth); t.lt(120);
+    frag(len,depth); t.lt(120);
+    frag(len,depth); t.lt(120);
+  }
+})();
+t.reset().bk(300).clean().rt(30);
+t.repeat(60, function(i){
+  t.color('hsla('+i+',50%,50%,0.1)');
+  kochRandom(550, 6);
+});
 		</pre>
 		<h3>Tree <a href="#" class="runner" title="run this sample program" data-code="tree-code">run this example</a></h3>
 		<pre id="tree-code">
