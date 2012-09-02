@@ -326,12 +326,13 @@ a[href].runner:hover{
 			<tr><td><code>t.lt(deg)</code></td><td>Left turn. Rotate <code>deg</code> counter-clockwise.</td></tr>
 			<tr><td><code>t.pu()</code></td><td>Pen up. Turtle no longer traces line along its path.</td></tr>
 			<tr><td><code>t.pd()</code></td><td>Pen down. Turtle resumes tracing line along its path.</td></tr>
-			<tr><td><code>t.clean(bgColor)</code></td><td>Revert screen to given or last set background color.</td></tr>
+			<tr><td><code>t.clean(bgColor)</code></td><td>Erases all lines. If <code>bgColor</code> is provided, updates background color.</td></tr>
 			<tr><td><code>t.home()</code></td><td>Revert turtle to center screen (0,0) and facing "north".</td></tr>
 			<tr><td><code>t.clear()</code></td><td>Equivalent to <code>clean()</code> and <code>home()</code> together.</td></tr>
 			<tr><td><code>t.reset()</code></td><td>Same as <code>clear()</code>, but also restores defaults.</td></tr>
 			<tr><td><code>t.color(color)</code></td><td>Sets pen color. Accepts any CSS color.</td></tr>
 			<tr><td><code>t.width(n)</code></td><td>Sets the width in px of the pen stroke.</td></tr>
+			<tr><td><code>t.face(x, y)</code></td><td>Turtle faces toward the given absolute coordinate.</td></tr>
 			<tr><td><code>t.absXY(x, y)</code></td><td>Moves turtle to absolute position, where origin (0,0) is center of screen.</td></tr>
 			<tr><td><code>t.absX(x)</code></td><td>Moves turtle to absolute X position, leaving Y coord unchanged.</td></tr>
 			<tr><td><code>t.absY(y)</code></td><td>Moves turtle to absolute Y position, leaving X coord unchanged.</td></tr>
@@ -341,21 +342,21 @@ a[href].runner:hover{
 		<p>
 			The above methods all return <code>this</code>, so they can be chained, e.g. <code>t.fd(100).rt(90).fd(100)</code>.
 			You may also wish to query turtle state.
-			For that, we have the <code>info</code> methods.
+			For that, we have the <code>get</code> methods.
 		</p>
 		<table>
 			<thead><tr><th>method</th><th>description</th></tr></thead>
 			<tbody>
-			<tr><td><code>t.info.x()</code></td><td>Turtle's x position where origin (0,0) is center of screen.</td></tr>
-			<tr><td><code>t.info.y()</code></td><td>Turtle's y position where origin (0,0) is center of screen.</td></tr>
-			<tr><td><code>t.info.heading()</code></td><td>Turtle's orientation in degrees, where 0 is "north".</td></tr>
-			<tr><td><code>t.info.pu()</code></td><td><code>true</code> if pen is up, <code>false</code> otherwise.</td></tr>
-			<tr><td><code>t.info.pd()</code></td><td><code>true</code> if pen is down, <code>false</code> otherwise.</td></tr>
-			<tr><td><code>t.info.color()</code></td><td>Pen color.</td></tr>
-			<tr><td><code>t.info.background()</code></td><td>Background color.</td></tr>
-			<tr><td><code>t.info.width()</code></td><td>Width in pixels of pen stroke.</td></tr>
-			<tr><td><code>t.info.oob()</code></td><td><code>true</code> if the turtle has moved out of bounds of the screen.</td></tr>
-			<tr><td><code>t.info.rand([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
+			<tr><td><code>t.get.x()</code></td><td>Turtle's x position where origin (0,0) is center of screen.</td></tr>
+			<tr><td><code>t.get.y()</code></td><td>Turtle's y position where origin (0,0) is center of screen.</td></tr>
+			<tr><td><code>t.get.heading()</code></td><td>Turtle's orientation in degrees, where 0 is "north".</td></tr>
+			<tr><td><code>t.get.pu()</code></td><td><code>true</code> if pen is up, <code>false</code> otherwise.</td></tr>
+			<tr><td><code>t.get.pd()</code></td><td><code>true</code> if pen is down, <code>false</code> otherwise.</td></tr>
+			<tr><td><code>t.get.color()</code></td><td>Pen color.</td></tr>
+			<tr><td><code>t.get.background()</code></td><td>Background color.</td></tr>
+			<tr><td><code>t.get.width()</code></td><td>Width in pixels of pen stroke.</td></tr>
+			<tr><td><code>t.get.oob()</code></td><td><code>true</code> if the turtle has moved out of bounds of the screen.</td></tr>
+			<tr><td><code>t.get.rand([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
 			</tbody>
 		</table>
 		<h2>Depth notes I</h2>
@@ -427,8 +428,8 @@ t.reset().color('rgba(255,255,255,0.2)')
 t.reset()
 .color('rgba(255,255,255,0.1)')
 .repeat(200000, function(){
-  t.fd(3).rt(t.info.rand(-10,10))
-  if (t.info.oob()) t.home().rt(t.info.rand(360))
+  t.fd(3).rt(t.get.rand(-10,10))
+  if (t.get.oob()) t.home().rt(t.get.rand(360))
 })
 		</pre>
 		<h3>Fun with spirograph <a href="#" class="runner" title="run this sample program" data-code="circles-code">run this example</a></h3>
@@ -536,14 +537,14 @@ t.repeat(60, function(i){
 		<pre id="tree-code">
 function tree(length, branches, depth, origDepth){
   if (origDepth === undefined) origDepth = depth;
-  var l = t.info.rand(length*.95,length*1.05);
+  var l = t.get.rand(length*.95,length*1.05);
   t.color('rgba(255,255,255,'+(depth+1)/origDepth+')').fd(l);
   var angle = 180/branches;
   if (depth &gt; 0) {
     t.lt(90);
     for (var i=0; i&lt;branches; i++){
       t.rt((angle/2));
-      var angleJitter = t.info.rand(-5,5);
+      var angleJitter = t.get.rand(-5,5);
       t.rt(angleJitter);
       tree(length*(3/4), branches, depth-1, origDepth);
       t.lt(angleJitter);
@@ -584,7 +585,7 @@ t.reset()
 .repeat(360, function(i){
   t.pu().home().pd()
   .repeat(80, function(){
-    t.fd(20).rt(t.info.y()+i)
+    t.fd(20).rt(t.get.y()+i)
   })
 })
 		</pre>
