@@ -125,6 +125,7 @@ a[href]{
 	border:none;
 	background-color: transparent;
 	line-height:1;
+	position: relative;
 }
 #input:focus,
 #biginput:focus{
@@ -361,7 +362,7 @@ a[href].runner:hover{
 			<tr><td><code>t.get.left()</code></td><td>Left boundary of screen.</td></tr>
 			<tr><td><code>t.get.right()</code></td><td>Right boundary of screen.</td></tr>
 			<tr><td><code>t.get.oob()</code></td><td><code>true</code> if the turtle has moved out of bounds of the screen.</td></tr>
-			<tr><td><code>t.get.rand([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
+			<tr><td><code>t.rand.uni([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
 			</tbody>
 		</table>
 		<h2>Depth notes I</h2>
@@ -433,8 +434,8 @@ t.reset().color('rgba(255,255,255,0.2)')
 t.reset()
 .color('rgba(255,255,255,0.1)')
 .repeat(200000, function(){
-  t.fd(3).rt(t.get.rand(-10,10))
-  if (t.get.oob()) t.home().rt(t.get.rand(360))
+  t.fd(3).rt(t.rand.uni(-10,10))
+  if (t.get.oob()) t.home().rt(t.rand.uni(360))
 })
 		</pre>
 		<h3>Fun with spirograph <a href="#" class="runner" title="run this sample program" data-code="circles-code">run this example</a></h3>
@@ -449,19 +450,44 @@ t.reset()
   }).rt(1);
 });
 		</pre>
-		<h3>A sperm-shaped affair <a href="#" class="runner" title="run this sample program" data-code="wiggles-code">run this example</a></h3>
-		<pre id="wiggles-code">
-t.reset().repeat(2000, function(i){
-  var y = t.get.rand(t.get.bottom(), t.get.top()) * .8;
-  var x = t.get.rand(t.get.left(), t.get.right()) * .8;
-  t.pu().xy(x,y).pd();
-  t.butt(0,0);
-  var h = t.get.heading();
-  t.repeat(50, function(i){
-    t.color('rgba(255,255,255,'+ Math.pow(1.1,-i) +')').fd(2.5).heading(t.get.rand(h-50,h+50));
+		<h3>More fun with Phi <a href="#" class="runner" title="run this sample program" data-code="phi2-code">run this example</a></h3>
+		<pre id="phi2-code">
+var phi = (Math.sqrt(5) + 1)/2;
+t.reset().repeat(1000, function(i){
+  t.pu().rt(360*phi).fd(Math.log(i)*40).pd();
+  t.repeat(50, function(j){
+    t.color('hsla('+((360 * (i/1000))-120)+',50%,50%,'+ Math.pow(1.1,-j) +')').fd(2.5);
   });
+  t.pu().xy(0,0).pd();
 });
 		</pre>
+		<h3>Cool thingy <a href="#" class="runner" title="run this sample program" data-code="phi3-code">run this example</a></h3>
+		<pre id="phi3-code">
+var phi = (Math.sqrt(5) + 1)/2;
+t.reset().repeat(3000, function(i){
+  t.pu().rt(360*phi).fd(Math.log(i)*40).pd();
+  t.repeat(25, function(j){
+    t.color('hsla('+((360 * (i/3000))-120)+',50%,50%,'+ Math.pow(1.2,-j) +')').fd(5).lt(2);
+  });
+  t.pu().xy(0,0).pd();
+});
+		</pre>
+		<!--
+		<h3>Swimmers <a href="#" class="runner" title="run this sample program" data-code="swimmers-code">run this example</a></h3>
+		<pre id="swimmers-code">
+t.reset().repeat(500, function(i){
+  var rangl = t.rand.uni(360);
+  var rdist = Math.abs(t.rand.norm(0, t.get.right()/2));
+  rdist += t.get.right()/20;
+  t.pu().heading(rangl).fd(rdist).pd();
+  var h = t.get.heading();
+  t.repeat(50, function(i){
+    t.color('rgba(255,255,255,'+ Math.pow(1.1,-i) +')').fd(2.5).heading(t.rand.uni(h-50,h+50));
+  });
+  t.home();
+});
+		</pre>
+		-->
 		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run this example</a></h3>
 		<pre id="triangles-code">
 function triangle(len, level){
@@ -555,14 +581,14 @@ t.repeat(60, function(i){
 		<pre id="tree-code">
 function tree(length, branches, depth, origDepth){
   if (origDepth === undefined) origDepth = depth;
-  var l = t.get.rand(length*.95,length*1.05);
+  var l = t.rand.uni(length*.95,length*1.05);
   t.color('rgba(255,255,255,'+(depth+1)/origDepth+')').fd(l);
   var angle = 180/branches;
   if (depth &gt; 0) {
     t.lt(90);
     for (var i=0; i&lt;branches; i++){
       t.rt((angle/2));
-      var angleJitter = t.get.rand(-5,5);
+      var angleJitter = t.rand.uni(-5,5);
       t.rt(angleJitter);
       tree(length*(3/4), branches, depth-1, origDepth);
       t.lt(angleJitter);

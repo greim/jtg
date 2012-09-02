@@ -366,6 +366,44 @@ window.Turtle = function(canvas){
 		bottom: function(){ return -origin.y; }
 	};
 
+	var normal = (function(){
+		var _u, _v;
+		function generate() {
+			while (true) {
+				var u = (2 * Math.random()) - 1;
+				var v = (2 * Math.random()) - 1;
+				var r = u*u + v*v;
+				/*if outside interval [0,1] start over*/
+				if(r === 0 || r >= 1) continue;
+
+				var c = Math.sqrt(-2 * Math.log(r) / r);
+				_u = u*c, _v = v*c;
+				return;
+			}
+		}
+		return function(){
+			var result;
+			if (_u === undefined && _v === undefined) generate();
+			if (_u !== undefined) result = _u, _u = undefined;
+			else                  result = _v, _v = undefined;
+			return result;
+		};
+	})();
+
+	T.rand = {
+		uni:function(lower, upper){
+			if (upper === undefined) upper = lower, lower = 0;
+			var diff = upper - lower;
+			return Math.random() * diff + lower;
+		},
+		norm:function(mean, stdDev){
+			return mean + (normal() * stdDev);
+		}
+	};
+
+
+
+
 	// init this turtle
 	T.init();
 };
