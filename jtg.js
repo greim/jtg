@@ -175,19 +175,19 @@ window.Turtle = function(canvas){
 		};
 		q(function(){ go(args); });
 	}
-	T.absXY = function(x, y){
+	T.xy = function(x, y){
 		xy(origin.x+x, origin.y-y);
 		return T;
 	};
-	T.absX = function(x){
+	T.x = function(x){
 		xy(origin.x+x, pos.y);
 		return T;
 	};
-	T.absY = function(y){
+	T.y = function(y){
 		xy(pos.x, origin.y-y);
 		return T;
 	};
-	T.absHeading = function(deg){
+	T.heading = function(deg){
 		heading = -deg * (Math.PI/180);
 		var absDeg = T.get.heading();
 		q(function(){
@@ -196,16 +196,27 @@ window.Turtle = function(canvas){
 		return T;
 	};
 	T.face = function(x, y){
-		x += origin.x;
 		y = -y;
 		y += origin.y;
+		x += origin.x;
 		heading = Math.atan2(pos.x - x, pos.y - y);
 		var absDeg = heading * (180/Math.PI);
 		q(function(){
 			trigger('rotate', absDeg);
 		});
 		return T;
-	}
+	};
+	T.butt = function(x, y){
+		y = -y;
+		y += origin.y;
+		x += origin.x;
+		heading = Math.atan2(pos.x - x, pos.y - y) + Math.PI;
+		var absDeg = heading * (180/Math.PI);
+		q(function(){
+			trigger('rotate', absDeg);
+		});
+		return T;
+	};
 
 	// ######################################################
 	// left turn, right turn
@@ -326,7 +337,7 @@ window.Turtle = function(canvas){
 			return pos.y; // from top left
 		},
 		heading: function(){
-			return heading * (180/Math.PI);
+			return -heading * (180/Math.PI);
 		},
 		pu: function(){
 			return !penDown;

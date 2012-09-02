@@ -333,10 +333,11 @@ a[href].runner:hover{
 			<tr><td><code>t.color(color)</code></td><td>Sets pen color. Accepts any CSS color.</td></tr>
 			<tr><td><code>t.width(n)</code></td><td>Sets the width in px of the pen stroke.</td></tr>
 			<tr><td><code>t.face(x, y)</code></td><td>Turtle faces toward the given absolute coordinate.</td></tr>
-			<tr><td><code>t.absXY(x, y)</code></td><td>Moves turtle to absolute position, where origin (0,0) is center of screen.</td></tr>
-			<tr><td><code>t.absX(x)</code></td><td>Moves turtle to absolute X position, leaving Y coord unchanged.</td></tr>
-			<tr><td><code>t.absY(y)</code></td><td>Moves turtle to absolute Y position, leaving X coord unchanged.</td></tr>
-			<tr><td><code>t.absHeading(deg)</code></td><td>Sets absolute turtle direction in degrees, with 0 being "north".</td></tr>
+			<tr><td><code>t.butt(x, y)</code></td><td>Turtle faces away from the given absolute coordinate.</td></tr>
+			<tr><td><code>t.xy(x, y)</code></td><td>Moves turtle to given absolute coords, where origin (0,0) is center of screen.</td></tr>
+			<tr><td><code>t.x(x)</code></td><td>Moves turtle to given absolute X coord, leaving Y coord unchanged.</td></tr>
+			<tr><td><code>t.y(y)</code></td><td>Moves turtle to given Y coord, leaving X coord unchanged.</td></tr>
+			<tr><td><code>t.heading(deg)</code></td><td>Sets absolute turtle direction in degrees, with 0 being "north".</td></tr>
 			</tbody>
 		</table>
 		<p>
@@ -459,7 +460,7 @@ function triangle(len, level){
     })
   }
 }
-t.reset().absXY(-300, -200).rt(30).clean();
+t.reset().xy(-300, -200).rt(30).clean();
 triangle(600, 7);
 		</pre>
 		<h3>Koch snowflake <a href="#" class="runner" title="run this sample program" data-code="koch-code">run this example</a></h3>
@@ -575,7 +576,7 @@ function dragon(length, iters){
     t.color('hsl('+c+',100%,70%)').fd(length)[d[i]?'rt':'lt'](90);
   }
 }
-t.reset().absXY(250,170).clean().lt(95);
+t.reset().xy(250,170).clean().lt(95);
 dragon(470,15);
 		</pre>
 		<h3>Another sample <a href="#" class="runner" title="run this sample program" data-code="state-code">run this example</a></h3>
