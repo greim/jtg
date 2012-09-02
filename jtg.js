@@ -189,19 +189,30 @@ window.Turtle = function(canvas){
 	};
 	T.absHeading = function(deg){
 		heading = -deg * (Math.PI/180);
-		var absDeg = T.info.heading();
+		var absDeg = T.get.heading();
 		q(function(){
 			trigger('rotate', absDeg);
 		});
 		return T;
 	};
+	T.face = function(x, y){
+		x += origin.x;
+		y = -y;
+		y += origin.y;
+		heading = Math.atan2(pos.x - x, pos.y - y);
+		var absDeg = heading * (180/Math.PI);
+		q(function(){
+			trigger('rotate', absDeg);
+		});
+		return T;
+	}
 
 	// ######################################################
 	// left turn, right turn
 	T.rt = function(deg) {
 		var delta = deg * (Math.PI/180);
 		heading -= delta;
-		var absDeg = T.info.heading();
+		var absDeg = T.get.heading();
 		q(function(){
 			trigger('rotate', absDeg);
 		});
@@ -296,7 +307,7 @@ window.Turtle = function(canvas){
 
 	// ######################################################
 	// misc getters
-	T.info = {
+	T.get = {
 		rand: function(lower, upper){
 			if (upper === undefined) upper = lower, lower = 0;
 			var diff = upper - lower;
