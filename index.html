@@ -331,7 +331,7 @@ a[href].runner:hover{
 			<tr><td><code>t.clear()</code></td><td>Equivalent to <code>clean()</code> and <code>home()</code> together.</td></tr>
 			<tr><td><code>t.reset()</code></td><td>Same as <code>clear()</code>, but also restores defaults.</td></tr>
 			<tr><td><code>t.color(color)</code></td><td>Sets pen color. Accepts any CSS color.</td></tr>
-			<tr><td><code>t.width(n)</code></td><td>Sets the width in px of the pen stroke.</td></tr>
+			<tr><td><code>t.thickness(n)</code></td><td>Sets the width in px of the pen stroke.</td></tr>
 			<tr><td><code>t.face(x, y)</code></td><td>Turtle faces toward the given absolute coordinate.</td></tr>
 			<tr><td><code>t.butt(x, y)</code></td><td>Turtle faces away from the given absolute coordinate.</td></tr>
 			<tr><td><code>t.xy(x, y)</code></td><td>Moves turtle to given absolute coords, where origin (0,0) is center of screen.</td></tr>
@@ -355,7 +355,11 @@ a[href].runner:hover{
 			<tr><td><code>t.get.pd()</code></td><td><code>true</code> if pen is down, <code>false</code> otherwise.</td></tr>
 			<tr><td><code>t.get.color()</code></td><td>Pen color.</td></tr>
 			<tr><td><code>t.get.background()</code></td><td>Background color.</td></tr>
-			<tr><td><code>t.get.width()</code></td><td>Width in pixels of pen stroke.</td></tr>
+			<tr><td><code>t.get.thickness()</code></td><td>Width in pixels of pen stroke.</td></tr>
+			<tr><td><code>t.get.top()</code></td><td>Top boundary of screen.</td></tr>
+			<tr><td><code>t.get.bottom()</code></td><td>Bottom boundary of screen.</td></tr>
+			<tr><td><code>t.get.left()</code></td><td>Left boundary of screen.</td></tr>
+			<tr><td><code>t.get.right()</code></td><td>Right boundary of screen.</td></tr>
 			<tr><td><code>t.get.oob()</code></td><td><code>true</code> if the turtle has moved out of bounds of the screen.</td></tr>
 			<tr><td><code>t.get.rand([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
 			</tbody>
@@ -443,6 +447,19 @@ t.reset()
       t.fd(27).rt(10)
     }).rt(10);
   }).rt(1);
+});
+		</pre>
+		<h3>A sperm-shaped affair <a href="#" class="runner" title="run this sample program" data-code="wiggles-code">run this example</a></h3>
+		<pre id="wiggles-code">
+t.reset().repeat(2000, function(i){
+  var y = t.get.rand(t.get.bottom(), t.get.top()) * .8;
+  var x = t.get.rand(t.get.left(), t.get.right()) * .8;
+  t.pu().xy(x,y).pd();
+  t.butt(0,0);
+  var h = t.get.heading();
+  t.repeat(50, function(i){
+    t.color('rgba(255,255,255,'+ Math.pow(1.1,-i) +')').fd(2.5).heading(t.get.rand(h-50,h+50));
+  });
 });
 		</pre>
 		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run this example</a></h3>
@@ -758,9 +775,9 @@ t.on('move', function(args){
 
 t.on('rotate', function(deg){
 	$turtle.css({
-		'-webkit-transform':'rotate('+Math.round(-deg)+'deg)',
-		'-moz-transform':'rotate('+Math.round(-deg)+'deg)',
-		'transform':'rotate('+Math.round(-deg)+'deg)'
+		'-webkit-transform':'rotate('+Math.round(deg)+'deg)',
+		'-moz-transform':'rotate('+Math.round(deg)+'deg)',
+		'transform':'rotate('+Math.round(deg)+'deg)'
 	});
 });
 

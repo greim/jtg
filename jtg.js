@@ -252,7 +252,7 @@ window.Turtle = function(canvas){
 		foreground = color;
 		return T;
 	};
-	T.width = function(aWidth){
+	T.thickness = function(aWidth){
 		width = aWidth;
 		return T;
 	};
@@ -293,7 +293,7 @@ window.Turtle = function(canvas){
 		background = defaultBg;
 		return T
 		.color(defaultFg)
-		.width(defaultWidth)
+		.thickness(defaultWidth)
 		.clear();
 	};
 
@@ -345,7 +345,7 @@ window.Turtle = function(canvas){
 		pd: function(){
 			return penDown;
 		},
-		width: function(){
+		thickness: function(){
 			return width;
 		},
 		color: function(){
@@ -359,7 +359,11 @@ window.Turtle = function(canvas){
 				|| pos.y > canvasHeight
 				|| pos.x < 0
 				|| pos.y < 0;
-		}
+		},
+		top: function(){ return origin.y; },
+		left: function(){ return -origin.x; },
+		right: function(){ return origin.x; },
+		bottom: function(){ return -origin.y; }
 	};
 
 	// init this turtle
