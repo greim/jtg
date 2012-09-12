@@ -327,6 +327,8 @@ a[href].runner:hover{
 			<tr><td><code>t.lt(deg)</code></td><td>Left turn. Rotate <code>deg</code> counter-clockwise.</td></tr>
 			<tr><td><code>t.pu()</code></td><td>Pen up. Turtle no longer traces line along its path.</td></tr>
 			<tr><td><code>t.pd()</code></td><td>Pen down. Turtle resumes tracing line along its path.</td></tr>
+			<tr><td><code>t.circle(radius)</code></td><td>Make an empty circle with midpoint at turtle position, with given <code>radius</code>.</td></tr>
+			<tr><td><code>t.disc(radius)</code></td><td>Make a solid disc with midpoint at turtle position, with given <code>radius</code>.</td></tr>
 			<tr><td><code>t.clean(bgColor)</code></td><td>Erases all lines. If <code>bgColor</code> is provided, updates background color.</td></tr>
 			<tr><td><code>t.home()</code></td><td>Revert turtle to center screen (0,0) and facing "north".</td></tr>
 			<tr><td><code>t.clear()</code></td><td>Equivalent to <code>clean()</code> and <code>home()</code> together.</td></tr>
@@ -361,8 +363,18 @@ a[href].runner:hover{
 			<tr><td><code>t.get.bottom()</code></td><td>Bottom boundary of screen.</td></tr>
 			<tr><td><code>t.get.left()</code></td><td>Left boundary of screen.</td></tr>
 			<tr><td><code>t.get.right()</code></td><td>Right boundary of screen.</td></tr>
-			<tr><td><code>t.get.oob()</code></td><td><code>true</code> if the turtle has moved out of bounds of the screen.</td></tr>
-			<tr><td><code>t.rand.uni([lower, ]upper)</code></td><td>A random number within the given bounds.</td></tr>
+			<tr><td><code>t.get.oob()</code></td><td>Returns <code>true</code> if the turtle has moved out of bounds of the screen.</td></tr>
+			</tbody>
+		</table>
+		<p>
+			...and also some randomness functions for convenience.
+		</p>
+		<table>
+			<thead><tr><th>method</th><th>description</th></tr></thead>
+			<tbody>
+			<tr><td><code>t.rand.uni([lower, ]upper)</code></td><td>A uniform distribution between <code>lower</code> (or zero) and <code>upper</code>.</td></tr>
+			<tr><td><code>t.rand.norm(mean, stdDev)</code></td><td>A normal distribution with the given <code>mean</code> and <code>stdDev</code> (standard deviation).</td></tr>
+			<tr><td><code>t.rand.chance(odds)</code></td><td>Returns <code>true</code> with a probability of <code>odds</code>, where <code>odds</code> is between 0 and 1.</td></tr>
 			</tbody>
 		</table>
 		<h2>Depth notes I</h2>
@@ -472,6 +484,25 @@ t.reset().repeat(3000, function(i){
   t.pu().xy(0,0).pd();
 });
 		</pre>
+		<h3>Circles <a href="#" class="runner" title="run this sample program" data-code="circles2-code">run this example</a></h3>
+		<pre id="circles2-code">
+var circle = (function(){
+  function circ(size, steps, level) {
+    t.repeat(2, function(){
+      if (level &gt; 0) { circ(size/2, steps, level-1); }
+      t.repeat(steps, function(){ t.fd((size/steps)*2).rt(180/steps); });
+    });
+  }
+  return function(size, steps, level){
+    var r = (size/Math.PI)*2;
+    t.pu().lt(90).fd(r).rt(90).pd().rt((180/steps)/2);
+    circ(size, steps, level);
+    t.lt((180/steps)/2).pu().rt(90).fd(r).lt(90).pd();
+  }
+})();
+t.reset().color('rgba(255,255,255,0.5)');
+circle(500, 20, 8);
+		</pre>
 		<!--
 		<h3>Swimmers <a href="#" class="runner" title="run this sample program" data-code="swimmers-code">run this example</a></h3>
 		<pre id="swimmers-code">
@@ -556,7 +587,7 @@ kochRandom(550, 6);
 var kochRandom = (function(){
   function frag(len, depth){
     if (depth &gt; 1) {
-      var r = Math.random() &gt; 0.5;
+      var r = t.rand.chance(1/2);
       frag(len/3, depth-1); t[r?'rt':'lt'](60);
       frag(len/3, depth-1); t[r?'lt':'rt'](120);
       frag(len/3, depth-1); t[r?'rt':'lt'](60);

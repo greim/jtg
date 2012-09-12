@@ -219,6 +219,31 @@ window.Turtle = function(canvas){
 	};
 
 	// ######################################################
+	// circular things
+	T.disc = function(radius){
+		var x = pos.x;
+		var y = pos.y;
+		q(function(){
+			ctx.beginPath();
+			ctx.fillStyle = foreground;
+			ctx.arc(x, y, radius, 0, 2*Math.PI, true);
+			ctx.fill();
+		});
+		return T;
+	};
+	T.circle = function(radius){
+		var x = pos.x;
+		var y = pos.y;
+		q(function(){
+			ctx.beginPath();
+			ctx.strokeStyle = foreground;
+			ctx.arc(x, y, radius, 0, 2*Math.PI, true);
+			ctx.stroke();
+		});
+		return T;
+	};
+
+	// ######################################################
 	// left turn, right turn
 	T.rt = function(deg) {
 		var delta = deg * (Math.PI/180);
@@ -319,22 +344,11 @@ window.Turtle = function(canvas){
 	// ######################################################
 	// misc getters
 	T.get = {
-		rand: function(lower, upper){
-			if (upper === undefined) upper = lower, lower = 0;
-			var diff = upper - lower;
-			return Math.random() * diff + lower;
-		},
 		x: function(){
 			return pos.x - origin.x;
 		},
 		y: function(){
 			return origin.y - pos.y;
-		},
-		tlX: function(){
-			return pos.x; // from top left
-		},
-		tlY: function(){
-			return pos.y; // from top left
 		},
 		heading: function(){
 			return -heading * (180/Math.PI);
@@ -398,6 +412,9 @@ window.Turtle = function(canvas){
 		},
 		norm:function(mean, stdDev){
 			return mean + (normal() * stdDev);
+		},
+		chance:function(odds){
+			return Math.random() < odds;
 		}
 	};
 
