@@ -293,6 +293,10 @@ a[href]{
 a[href].runner:hover{
 	background:rgba(255,255,255,0.05);
 }
+a[href].toggle-help{
+	color: inherit;
+	font-style:italic;
+}
 </style>
 <script src="jquery-1.8.0.min.js"></script>
 <script src="jtg.js"></script>
@@ -300,7 +304,7 @@ a[href].runner:hover{
 <body>
 <div id="help" class="hidden">
 	<p id="helpesctip">
-		Press F1 to show/hide this help
+		Press F1 or <a href="#" class="toggle-help">click here</a> to show/hide this help
 	</p>
 	<div id="helpA">
 		<h2>Welcome to JavaScript Turtle Graphics!</h2>
@@ -780,7 +784,7 @@ var t = turtle;
 
 
 (function(){
-	var hintsHtml = '<p id="esctip">press ESC to clear screen<br>press F1 to show/hide help and code samples<br>press UP or DOWN to navigate history</p>';
+	var hintsHtml = '<p id="esctip">press ESC to clear screen<br><a href="#" class="toggle-help">click here</a> or press F1 to show/hide help and code samples<br>press UP or DOWN to navigate history</p>';
 	var collapsedHtml = hintsHtml+'<input id="input" autofocus autocomplete="off"><button type="button" id="expand" href="#" data-title="Switch to multi-line input">expand</button>';
 	var expandedHtml = '<span id="althint">EXECUTE: ALT+ENTER<br>HISTORY: ALT+UP/DOWN</span>'+hintsHtml+'<textarea id="biginput" autofocus></textarea><button type="button" id="collapse" href="#" data-title="Switch to single-line input">collapse</button>';
 	$('#control').html(collapsedHtml);
@@ -806,16 +810,25 @@ var t = turtle;
 
 $('#input').val("t.repeat(180, function(){ t.fd(200).rt(106); }); /* press ENTER to see the results */").focus();
 
+function toggleHelp(){
+	var $help = $('#help');
+	if ($help.hasClass('hidden')) {
+		$help.hide().removeClass('hidden').fadeIn(200);
+	} else {
+		$help.fadeOut(100, function(){
+			$help.addClass('hidden');
+		});
+	}
+}
+
+$('body').on('click', '.toggle-help', function(ev){
+	ev.preventDefault();
+	toggleHelp();
+});
+
 $('body').on('keydown', function(ev){
 	if (ev.keyCode === 112) {
-		var $help = $('#help');
-		if ($help.hasClass('hidden')) {
-			$help.hide().removeClass('hidden').fadeIn(200);
-		} else {
-			$help.fadeOut(100, function(){
-				$help.addClass('hidden');
-			});
-		}
+		toggleHelp();
 	} else if (ev.keyCode === 27) {
 		ev.preventDefault();
 		t.clear();
