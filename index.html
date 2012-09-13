@@ -569,7 +569,7 @@ koch(550, 6);
 var kochRandom = (function(){
   function frag(len, depth){
     if (depth &gt; 1) {
-      var r = Math.random() &gt; 0.5;
+      var r = t.rand.chance(1/2);
       frag(len/3, depth-1); t[r?'rt':'lt'](60);
       frag(len/3, depth-1); t[r?'lt':'rt'](120);
       frag(len/3, depth-1); t[r?'rt':'lt'](60);
