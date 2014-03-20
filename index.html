@@ -508,24 +508,8 @@ var circle = (function(){
 t.reset().color('rgba(255,255,255,0.5)');
 circle(500, 20, 8);
 		</pre>
-		<!--
-		<h3>Swimmers <a href="#" class="runner" title="run this sample program" data-code="swimmers-code">run this example</a></h3>
-		<pre id="swimmers-code">
-t.reset().repeat(500, function(i){
-  var rangl = t.rand.uni(360);
-  var rdist = Math.abs(t.rand.norm(0, t.get.right()/2));
-  rdist += t.get.right()/20;
-  t.pu().heading(rangl).fd(rdist).pd();
-  var h = t.get.heading();
-  t.repeat(50, function(i){
-    t.color('rgba(255,255,255,'+ Math.pow(1.1,-i) +')').fd(2.5).heading(t.rand.uni(h-50,h+50));
-  });
-  t.home();
-});
-		</pre>
-		-->
-		<h3>Nested triangles <a href="#" class="runner" title="run this sample program" data-code="triangles-code">run this example</a></h3>
-		<pre id="triangles-code">
+		<h3>Sierpinski triangle 1 <a href="#" class="runner" title="run this sample program" data-code="sierpinski-code-1">run this example</a></h3>
+		<pre id="sierpinski-code-1">
 function triangle(len, level){
   if (level &lt; 1) {
     t.repeat(3, function(){
@@ -541,6 +525,26 @@ function triangle(len, level){
 }
 t.reset().xy(-300, -200).rt(30).clean();
 triangle(600, 7);
+		</pre>
+		<h3>Sierpinski triangle 2 <a href="#" class="runner" title="run this sample program" data-code="sierpinski-code-2">run this example</a></h3>
+		<pre id="sierpinski-code-2">
+var triangle = (function(){
+  function frag(len, depth, left){
+    if (left === undefined) left = !(depth % 2);
+    if (depth > 1) {
+      frag(len/2, depth-1, !left);
+      t[left?'lt':'rt'](60);
+      frag(len/2, depth-1, left);
+      t[left?'lt':'rt'](60);
+      frag(len/2, depth-1, !left);
+    } else {
+      t.fd(len);
+    }
+  }
+  return frag;
+})();
+t.reset().pu().bk(250).rt(90).bk(350).pd().color('hsl(30, 100%, 70%)');
+triangle(700, 8);
 		</pre>
 		<h3>Koch snowflake <a href="#" class="runner" title="run this sample program" data-code="koch-code">run this example</a></h3>
 		<pre id="koch-code">
@@ -678,15 +682,31 @@ t.reset()
 
 $('a[href].runner').on('click', function(ev){
 	ev.preventDefault();
-	var id = $(this).attr('data-code');
-	var code = $('#'+id).text();
+	var $codeEl = $(this).parent().next('pre');
+	run($codeEl);
+});
+
+function run($codeEl){
+	var code = $codeEl.text();
+	if (!$codeEl.is('pre')) return;
+	$('input#input').val('/* type JS commands here (or type "help") */').select();
 	$('#help').addClass('hidden').hide();
 	try {
 		with (window) { window.eval(code); }
 	} catch(err) {
 		mess(err.message);
 	}
-})
+}
+
+$(function(){
+	$('.runner').each(function(){
+		var $runner = $(this);
+		$runner.attr('href', '#' + $runner.parent().next('pre').attr('id'))
+	});
+	if (!location.hash) return;
+	if (!(/^#[a-z_-]+$/i).test(location.hash)) return;
+	run($(location.hash));
+});
 
 var canvas = document.getElementById('c');
 canvas.width = window.innerWidth;
@@ -719,6 +739,11 @@ var t = turtle;
 			ev.preventDefault();
 			var val = $inp.val();
 			if (!val || !/\S/.test(val)) return;
+			if ((/^\s*help\s*$/i).test(val)){
+				toggleHelp();
+				$inp.val('');
+				return;
+			}
 			try {
 				with (window) { window.eval(val); }
 			} catch(err) {
@@ -760,6 +785,11 @@ var t = turtle;
 			ev.preventDefault();
 			var val = $inp.val();
 			if (!val || !/\S/.test(val)) return;
+			if ((/^\s*help\s*$/i).test(val)){
+				toggleHelp();
+				$inp.val('');
+				return;
+			}
 			val = val.replace(/\r?\n$/,'');
 			$inp.val(val);
 			try {
