@@ -473,7 +473,8 @@ var phi = (Math.sqrt(5) + 1)/2;
 t.reset().repeat(1000, function(i){
   t.pu().rt(360*phi).fd(Math.log(i)*40).pd();
   t.repeat(50, function(j){
-    t.color('hsla('+((360 * (i/1000))-120)+',50%,50%,'+ Math.pow(1.1,-j) +')').fd(2.5);
+    t.color('hsla('+((360 * (i/1000))-120)+',50%,50%,'
+      + Math.pow(1.1,-j) +')').fd(2.5);
   });
   t.pu().xy(0,0).pd();
 });
@@ -484,7 +485,8 @@ var phi = (Math.sqrt(5) + 1)/2;
 t.reset().repeat(3000, function(i){
   t.pu().rt(360*phi).fd(Math.log(i)*40).pd();
   t.repeat(25, function(j){
-    t.color('hsla('+((360 * (i/3000))-120)+',50%,50%,'+ Math.pow(1.2,-j) +')').fd(5).lt(2);
+    t.color('hsla('+((360 * (i/3000))-120)+',50%,50%,'
+      + Math.pow(1.2,-j) +')').fd(5).lt(2);
   });
   t.pu().xy(0,0).pd();
 });
@@ -495,7 +497,9 @@ var circle = (function(){
   function circ(size, steps, level) {
     t.repeat(2, function(){
       if (level &gt; 0) { circ(size/2, steps, level-1); }
-      t.repeat(steps, function(){ t.fd((size/steps)*2).rt(180/steps); });
+      t.repeat(steps, function(){
+        t.fd((size/steps)*2).rt(180/steps);
+      });
     });
   }
   return function(size, steps, level){
@@ -543,7 +547,8 @@ var triangle = (function(){
   }
   return frag;
 })();
-t.reset().pu().bk(250).rt(90).bk(350).pd().color('hsl(30, 100%, 70%)');
+t.reset().pu().bk(250).rt(90).bk(350)
+.pd().color('hsl(30, 100%, 70%)');
 triangle(700, 8);
 		</pre>
 		<h3>Koch snowflake <a href="#" class="runner" title="run this sample program" data-code="koch-code">run this example</a></h3>
@@ -656,7 +661,8 @@ function dragon(length, iters){
   var c = 0;
   for (var i=0; i&lt;d.length; i++) {
     c += .01;
-    t.color('hsl('+c+',100%,70%)').fd(length)[d[i]?'rt':'lt'](90);
+    t.color('hsl('+c+',100%,70%)')
+    .fd(length)[d[i]?'rt':'lt'](90);
   }
 }
 t.reset().xy(250,170).clean().lt(95);
