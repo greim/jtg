@@ -704,7 +704,7 @@ $(function(){
 		$runner.attr('href', '#' + $runner.parent().next('pre').attr('id'))
 	});
 	if (!location.hash) return;
-	if (!(/^#[a-z_-]+$/i).test(location.hash)) return;
+	if (!(/^#[a-z0-9_-]+$/i).test(location.hash)) return;
 	run($(location.hash));
 });
 
