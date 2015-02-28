@@ -1,2 +1,3 @@
-node_modules/
-!/node_modules/jtg/
+node_modules/*
+!node_modules/jtg
+.DS_Store
