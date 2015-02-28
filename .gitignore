@@ -1,3 +1,4 @@
 node_modules/*
 !node_modules/jtg
 .DS_Store
+/static/js/main.js
