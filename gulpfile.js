@@ -9,8 +9,10 @@ var watchify = require('watchify')
   , source = require('vinyl-source-stream')
   , server = require('jtg/server')
   , babelify = require('babelify')
+  , gulp = require('gulp')
+  , jsx = require('node-jsx')
 
-var gulp = require('gulp')
+jsx.install({extension:'.jsx'})
 
 gulp.task('run', ['bundle'], function(){
   var port = 8888
