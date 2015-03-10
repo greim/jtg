@@ -12,6 +12,7 @@
     "babel": "^4.6.1",
     "bluebird": "^2.9.13",
     "co": "^4.4.0",
+    "eventual-pony": "0.0.1",
     "koa": "^0.18.0",
     "koa-static": "^1.4.9",
     "lodash": "^3.3.1"
